@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多布局1:1精准复刻 1080×641 稳定版</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#f4f4f4;padding:20px;display:flex;flex-direction:column;align-items:center;gap:20px}
+
+.panel{background:#fff;padding:20px;border-radius:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;width:100%;max-width:1100px}
+.control{display:flex;column-gap:16px;flex-direction:column;gap:6px}
+label{font-size:14px;font-weight:500}
+input,button,select{padding:8px 12px;border-radius:6px;border:1px solid #ddd}
+button{background:#2563eb;color:#fff;border:none;cursor:pointer}
+
+.preview-box{
+  width:1080px;
+  height:641px;
+  border:3px solid #2563eb;
+  border-radius:8px;
+  background:#fff;
+  position:relative;
+  overflow:hidden;
+}
+#bg-img{
+  position:absolute;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0.35;
+  pointer-events:none;
+  z-index:1;
+}
+#canvas{
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:transparent;
+  z-index:2;
+}
+.hint{font-size:12px;color:#666}
+.title{text-align:center;grid-column:1/-1}
+</style>
+</head>
+
+<body>
+
+<div class="panel">
+  <div class="title"><h2>⌨️ 多布局 1:1 精准重合工具</h2></div>
+  <div class="control">
+    <label>选择布局</label>
+    <select id="layout">
+      <option value="9">9键键盘</option>
+      <option value="26" selected>26键键盘</option>
+      <option value="num">数字键盘</option>
+      <option value="num2">123键2（图一）</option>
+      <option value="stroke">笔画键盘（图二）</option>
+      <option value="handwrite">手写键盘（图三）</option>
+      <option value="symbol">符号键盘（图四）</option>
+      <!-- 新增两个日文布局 -->
+      <option value="jp9">日文九键</option>
+      <option value="jp26">日文26键</option>
+    </select>
+  </div>
+  <div class="control">
+    <label>字母大小写</label>
+    <select id="caseMode">
+      <option value="upper" selected>大写 A</option>
+      <option value="lower">小写 a</option>
+    </select>
+  </div>
+  <div class="control">
+    <label>上传参考底图</label>
+    <input type="file" id="bgInput" accept="image/*">
+  </div>
+  <div class="control">
+    <label>上传字体 (.ttf/.otf)</label>
+    <input type="file" id="fontInput" accept=".ttf,.otf">
+  </div>
+  <div class="control">
+    <label>字体颜色</label>
+    <input type="color" id="color" value="#000000">
+  </div>
+  <div class="control">
+    <label>字体粗细</label>
+    <input type="range" id="weight" min="100" max="900" step="100" value="400">
+  </div>
+  <div class="control">
+    <label>字体大小</label>
+    <input type="range" id="fontSize" min="20" max="100" step="1" value="48">
+  </div>
+  <div class="control">
+    <button id="export">✅ 导出 1080×641 透明PNG</button>
+    <div class="hint">字母1:1对应底图位置，无乱码</div>
+  </div>
+</div>
+
+<div class="preview-box">
+  <img id="bg-img">
+  <canvas id="canvas"></canvas>
+</div>
+
+<script>
+const W = 1080, H = 641;
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const bgImg = document.getElementById('bg-img');
+
+// 9键
+const keys9 = [
+  {t:'ABC', x:540, y:96},{t:'DEF', x:810, y:96},
+  {t:'GHI', x:270, y:256},{t:'JKL', x:540, y:256},{t:'MNO', x:810, y:256},
+  {t:'PQRS', x:270, y:416},{t:'TUV', x:540, y:416},{t:'WXYZ', x:810, y:416}
+];
+
+// 26键
+const keys26 = [
+  // 第一行 Q W E R T Y U I O P
+  {t:'Q', x:50, y:90},
+  {t:'W', x:160, y:90},
+  {t:'E', x:270, y:90},
+  {t:'R', x:380, y:90},
+  {t:'T', x:490, y:90},
+  {t:'Y', x:600, y:90},
+  {t:'U', x:710, y:90},
+  {t:'I', x:820, y:90},
+  {t:'O', x:930, y:90},
+  {t:'P', x:1040, y:90},
+
+  // 第二行 A S D F G H J K L
+  {t:'A', x:110, y:250},
+  {t:'S', x:220, y:250},
+  {t:'D', x:330, y:250},
+  {t:'F', x:440, y:250},
+  {t:'G', x:550, y:250},
+  {t:'H', x:660, y:250},
+  {t:'J', x:770, y:250},
+  {t:'K', x:880, y:250},
+  {t:'L', x:990, y:250},
+
+  // 第三行 大写 Z X C V B N M 删除
+  {t:'大写', x:70, y:410},
+  {t:'Z', x:220, y:410},
+  {t:'X', x:330, y:410},
+  {t:'C', x:440, y:410},
+  {t:'V', x:550, y:410},
+  {t:'B', x:660, y:410},
+  {t:'N', x:770, y:410},
+  {t:'M', x:880, y:410},
+  {t:'删除', x:1000, y:410},
+
+  // 第四行 符 123 , 空格 。 c/n 发送
+  {t:'符', x:80, y:570},
+  {t:'123', x:200, y:570},
+  {t:',', x:320, y:570},
+  {t:'空格', x:540, y:570},
+  {t:'。', x:760, y:570},
+  {t:'c/n', x:880, y:570},
+  {t:'发送', x:1000, y:570}
+];
+
+// 数字键盘
+const keysNum = [
+  {t:'1',x:335,y:155},{t:'2',x:540,y:155},{t:'3',x:745,y:155},{t:'Back',x:950,y:155},
+  {t:'4',x:335,y:315},{t:'5',x:540,y:315},{t:'6',x:745,y:315},{t:'@',x:950,y:315},
+  {t:'7',x:335,y:475},{t:'8',x:540,y:475},{t:'9',x:745,y:475},{t:'.',x:950,y:475},
+  {t:'Fn',x:180,y:590},{t:'Ctrl',x:360,y:590},{t:'0',x:540,y:590},{t:'qq.com',x:745,y:590},{t:'Enter',x:950,y:590}
+];
+
+// 图一：123键2（数字键盘2）
+const keysNum2 = [
+  // 第一行
+  {t:'1', x:270, y:130},
+  {t:'2', x:540, y:130},
+  {t:'3', x:810, y:130},
+  {t:'删除', x:1000, y:130},
+  // 第二行
+  {t:'4', x:270, y:290},
+  {t:'5', x:540, y:290},
+  {t:'6', x:810, y:290},
+  {t:'@', x:1000, y:290},
+  // 第三行
+  {t:'7', x:270, y:450},
+  {t:'8', x:540, y:450},
+  {t:'9', x:810, y:450},
+  {t:'.', x:1000, y:450},
+  // 第四行
+  {t:'符', x:80, y:590},
+  {t:'返回', x:270, y:590},
+  {t:'0', x:540, y:590},
+  {t:'空格', x:810, y:590},
+  {t:'发送', x:1000, y:590}
+];
+
+// 图二：笔画键盘
+const keysStroke = [
+  // 第一行
+  {t:'一', x:270, y:130},
+  {t:'丨', x:540, y:130},
+  {t:'丿', x:810, y:130},
+  {t:'删除', x:1000, y:130},
+  // 第二行
+  {t:'丶', x:270, y:290},
+  {t:'乙', x:540, y:290},
+  {t:'*', x:810, y:290},
+  {t:'清空', x:1000, y:290},
+  // 第三行
+  {t:'\' ', x:270, y:450},
+  {t:':', x:540, y:450},
+  {t:';', x:810, y:450},
+  {t:'发送', x:1000, y:450},
+  // 第四行
+  {t:'符', x:80, y:590},
+  {t:'123', x:270, y:590},
+  {t:'空格', x:540, y:590},
+  {t:'c/n', x:810, y:590}
+];
+
+// 图三：手写键盘
+const keysHandwrite = [
+  // 右侧列
+  {t:'删除', x:1000, y:130},
+  {t:'清空', x:1000, y:290},
+  {t:'发送', x:1000, y:450},
+  // 底部行
+  {t:'符', x:80, y:590},
+  {t:'123', x:270, y:590},
+  {t:'空格', x:540, y:590},
+  {t:'c/n', x:810, y:590}
+];
+
+// 图四：符号键盘
+const keysSymbol = [
+  // 底部行
+  {t:'返回', x:80, y:590},
+  {t:'上', x:270, y:590},
+  {t:'下', x:540, y:590},
+  {t:'删除', x:950, y:590}
+];
+
+// --------------------------
+// 新增：日文九键（对应你第一张图）
+// --------------------------
+const keysJp9 = [
+  // 第一行
+  {t:'あ', x:270, y:130},
+  {t:'か', x:540, y:130},
+  {t:'さ', x:810, y:130},
+  // 第二行
+  {t:'た', x:270, y:290},
+  {t:'な', x:540, y:290},
+  {t:'は', x:810, y:290},
+  // 第三行
+  {t:'ま', x:270, y:450},
+  {t:'や', x:540, y:450},
+  {t:'ら', x:810, y:450},
+  // 第四行
+  {t:'、。?!', x:80, y:590},
+  {t:'^^', x:270, y:590},
+  {t:'わ_', x:540, y:590},
+  {t:'ABC', x:810, y:590},
+  {t:'改行', x:1000, y:450}
+];
+
+// --------------------------
+// 新增：日文26键（对应你第二张图）
+// --------------------------
+const keysJp26 = [
+  // 第一行
+  {t:'本', x:50, y:90},
+  {t:'ア', x:160, y:90},
+  {t:'ス', x:270, y:90},
+  {t:'デ', x:380, y:90},
+  {t:'サ', x:490, y:90},
+  {t:'ザ', x:600, y:90},
+  {t:'レ', x:710, y:90},
+  {t:'ワ', x:820, y:90},
+  {t:'ガ', x:930, y:90},
+  {t:'す', x:1040, y:90},
+
+  // 第二行
+  {t:'キ', x:110, y:250},
+  {t:'不', x:220, y:250},
+  {t:'ブ', x:330, y:250},
+  {t:'ヤ', x:440, y:250},
+  {t:'ル', x:550, y:250},
+  {t:'ブ', x:660, y:250},
+  {t:'リ', x:770, y:250},
+  {t:'ン', x:880, y:250},
+  {t:'レ', x:990, y:250},
+
+  // 第三行
+  {t:'↑', x:70, y:410},
+  {t:'フ', x:220, y:410},
+  {t:'ス', x:330, y:410},
+  {t:'ン', x:440, y:410},
+  {t:'ソ', x:550, y:410},
+  {t:'ザ', x:660, y:410},
+  {t:'ザ', x:770, y:410},
+  {t:'ブ', x:880, y:410},
+  {t:'⌫', x:1000, y:410},
+
+  // 第四行
+  {t:'123', x:80, y:570},
+  {t:'😊', x:220, y:570},
+  {t:'空格', x:540, y:570},
+  {t:'検索', x:1000, y:570}
+];
+
+let current = keys26;
+let customFont = null;
+let drag = null;
+
+function init(){
+  canvas.width = W;
+  canvas.height = H;
+  draw();
+}
+
+// 安全绘制，杜绝乱码 / 显示异常
+function draw(){
+  ctx.clearRect(0, 0, W, H);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = document.getElementById('color').value;
+
+  const fontSize = document.getElementById('fontSize').value;
+  const weight = document.getElementById('weight').value;
+  const fontFace = customFont ? 'CustomFont' : 'system-ui, -apple-system, sans-serif';
+  ctx.font = `${weight} ${fontSize}px ${fontFace}`;
+
+  // 大小写模式（仅对字母生效，中文/符号/日文保持原样）
+  const caseMode = document.getElementById('caseMode').value;
+
+  current.forEach(k => {
+    let txt = k.t;
+    // 仅对纯字母内容切换大小写，非字母键盘不切换
+    if (current === keys9 || current === keys26 || current === keysNum) {
+      if (/^[a-zA-Z]+$/.test(txt)) {
+        if (caseMode === 'lower') {
+          txt = txt.toLowerCase();
+        } else {
+          txt = txt.toUpperCase();
+        }
+      }
+    }
+    ctx.fillText(txt, k.x, k.y);
+  });
+}
+
+// 切换布局
+document.getElementById('layout').addEventListener('change', e=>{
+  if(e.target.value==='9') current=keys9;
+  else if(e.target.value==='26') current=keys26;
+  else if(e.target.value==='num') current=keysNum;
+  else if(e.target.value==='num2') current=keysNum2;
+  else if(e.target.value==='stroke') current=keysStroke;
+  else if(e.target.value==='handwrite') current=keysHandwrite;
+  else if(e.target.value==='symbol') current=keysSymbol;
+  else if(e.target.value==='jp9') current=keysJp9;
+  else if(e.target.value==='jp26') current=keysJp26;
+  draw();
+});
+
+// 切换大小写
+document.getElementById('caseMode').addEventListener('change', draw);
+
+// 背景图
+document.getElementById('bgInput').addEventListener('change', e=>{
+  const f=e.target.files[0];
+  if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{ bgImg.src=ev.target.result; };
+  r.readAsDataURL(f);
+});
+
+// 自定义字体
+document.getElementById('fontInput').addEventListener('change', e=>{
+  const f=e.target.files[0];
+  if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const ff = new FontFace('CustomFont', ev.target.result);
+    ff.load().then(font => {
+      document.fonts.add(font);
+      customFont = font;
+      draw();
+      alert('✅ 字体加载成功');
+    }).catch(()=>alert('❌ 字体加载失败'));
+  };
+  r.readAsArrayBuffer(f);
+});
+
+// 拖动字母微调
+function hit(e){
+  const r=canvas.getBoundingClientRect();
+  const x=(e.clientX-r.left)*(W/r.width);
+  const y=(e.clientY-r.top)*(H/r.height);
+  return current.find(k=>Math.hypot(x-k.x,y-k.y)<36)||null;
+}
+canvas.addEventListener('mousedown',e=>{ drag=hit(e); });
+window.addEventListener('mousemove',e=>{
+  if(!drag)return;
+  drag.x += e.movementX;
+  drag.y += e.movementY;
+  draw();
+});
+window.addEventListener('mouseup',()=>{ drag=null; });
+
+// 导出
+document.getElementById('export').addEventListener('click', ()=>{
+  try {
+    canvas.toBlob(blob=>{
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      const typ=document.getElementById('layout').value;
+      let name = '';
+      if(typ==='9') name='9键';
+      else if(typ==='26') name='26键';
+      else if(typ==='num') name='数字键盘';
+      else if(typ==='num2') name='123键2';
+      else if(typ==='stroke') name='笔画键盘';
+      else if(typ==='handwrite') name='手写键盘';
+      else if(typ==='symbol') name='符号键盘';
+      else if(typ==='jp9') name='日文九键';
+      else if(typ==='jp26') name='日文26键';
+      a.download=name+'_1080x641.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+      alert('✅ 导出成功！1:1精准透明图');
+    },'image/png',1.0);
+  }catch(e){
+    alert('导出异常：'+e.message);
+  }
+});
+
+// 实时刷新
+document.getElementById('color').addEventListener('input', draw);
+document.getElementById('weight').addEventListener('input', draw);
+document.getElementById('fontSize').addEventListener('input', draw);
+
+init();
+</script>
+</body>
+</html>
