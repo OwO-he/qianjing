@@ -52,13 +52,13 @@ button{background:#2563eb;color:#fff;border:none;cursor:pointer}
     <label>选择布局</label>
     <select id="layout">
       <option value="9">9键键盘</option>
+      <option value="9v2">9键2</option>
       <option value="26" selected>26键键盘</option>
       <option value="num">数字键盘</option>
       <option value="num2">123键2（图一）</option>
       <option value="stroke">笔画键盘（图二）</option>
       <option value="handwrite">手写键盘（图三）</option>
       <option value="symbol">符号键盘（图四）</option>
-      <!-- 新增两个日文布局 -->
       <option value="jp9">日文九键</option>
       <option value="jp26">日文26键</option>
     </select>
@@ -107,11 +107,35 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const bgImg = document.getElementById('bg-img');
 
-// 9键
+// 原9键
 const keys9 = [
   {t:'ABC', x:540, y:96},{t:'DEF', x:810, y:96},
   {t:'GHI', x:270, y:256},{t:'JKL', x:540, y:256},{t:'MNO', x:810, y:256},
   {t:'PQRS', x:270, y:416},{t:'TUV', x:540, y:416},{t:'WXYZ', x:810, y:416}
+];
+
+// 9键2
+const keys9v2 = [
+  // 第一行
+  {t:'分词', x:270, y:96},
+  {t:'ABC', x:540, y:96},
+  {t:'DEF', x:810, y:96},
+  {t:'删除', x:1000, y:96},
+  // 第二行
+  {t:'GHI', x:270, y:256},
+  {t:'JKL', x:540, y:256},
+  {t:'MNO', x:810, y:256},
+  {t:'清空', x:1000, y:256},
+  // 第三行
+  {t:'PQRS', x:270, y:416},
+  {t:'TUV', x:540, y:416},
+  {t:'WXYZ', x:810, y:416},
+  {t:'发送', x:1000, y:480},
+  // 第四行
+  {t:'符', x:80, y:570},
+  {t:'123', x:270, y:570},
+  {t:'空格', x:540, y:570},
+  {t:'c/n', x:810, y:570}
 ];
 
 // 26键
@@ -239,9 +263,7 @@ const keysSymbol = [
   {t:'删除', x:950, y:590}
 ];
 
-// --------------------------
-// 新增：日文九键（对应你第一张图）
-// --------------------------
+// 日文九键
 const keysJp9 = [
   // 第一行
   {t:'あ', x:270, y:130},
@@ -263,9 +285,7 @@ const keysJp9 = [
   {t:'改行', x:1000, y:450}
 ];
 
-// --------------------------
-// 新增：日文26键（对应你第二张图）
-// --------------------------
+// 日文26键
 const keysJp26 = [
   // 第一行
   {t:'本', x:50, y:90},
@@ -335,8 +355,8 @@ function draw(){
 
   current.forEach(k => {
     let txt = k.t;
-    // 仅对纯字母内容切换大小写，非字母键盘不切换
-    if (current === keys9 || current === keys26 || current === keysNum) {
+    // 仅对纯字母内容切换大小写
+    if (current === keys9 || current === keys9v2 || current === keys26 || current === keysNum) {
       if (/^[a-zA-Z]+$/.test(txt)) {
         if (caseMode === 'lower') {
           txt = txt.toLowerCase();
@@ -352,6 +372,7 @@ function draw(){
 // 切换布局
 document.getElementById('layout').addEventListener('change', e=>{
   if(e.target.value==='9') current=keys9;
+  else if(e.target.value==='9v2') current=keys9v2;
   else if(e.target.value==='26') current=keys26;
   else if(e.target.value==='num') current=keysNum;
   else if(e.target.value==='num2') current=keysNum2;
@@ -417,7 +438,8 @@ document.getElementById('export').addEventListener('click', ()=>{
       const typ=document.getElementById('layout').value;
       let name = '';
       if(typ==='9') name='9键';
-      else if(typ==='26') name='26键';
+      else if(typ==='9v2') name='9键2';
+      else if(typ==='26键') name='26键';
       else if(typ==='num') name='数字键盘';
       else if(typ==='num2') name='123键2';
       else if(typ==='stroke') name='笔画键盘';
