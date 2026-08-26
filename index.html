@@ -1,470 +1,1361 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>多布局1:1精准复刻 1080×641 稳定版</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
-body{background:#f4f4f4;padding:20px;display:flex;flex-direction:column;align-items:center;gap:20px}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>昀の工具集 · 前景 + 模板</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;}
+    body{background:#f4f4f4;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px;min-height:100vh;}
+    
+    /* 顶部切换按钮 */
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      max-width: 700px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px 0;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      background: transparent;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: #2563eb;
+      color: #fff;
+      box-shadow: 0 4px 8px rgba(37,99,235,0.2);
+    }
+    .tab-btn:active { transform: scale(0.97); }
 
-.panel{background:#fff;padding:20px;border-radius:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;width:100%;max-width:1100px}
-.control{display:flex;column-gap:16px;flex-direction:column;gap:6px}
-label{font-size:14px;font-weight:500}
-input,button,select{padding:8px 12px;border-radius:6px;border:1px solid #ddd}
-button{background:#2563eb;color:#fff;border:none;cursor:pointer}
+    /* 页面容器 */
+    .page {
+      display: none;
+      width: 100%;
+      max-width: 700px;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .page.active {
+      display: flex;
+    }
 
-.preview-box{
-  width:1080px;
-  height:641px;
-  border:3px solid #2563eb;
-  border-radius:8px;
-  background:#fff;
-  position:relative;
-  overflow:hidden;
-}
-#bg-img{
-  position:absolute;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  opacity:0.35;
-  pointer-events:none;
-  z-index:1;
-}
-#canvas{
-  position:absolute;
-  width:100%;
-  height:100%;
-  background:transparent;
-  z-index:2;
-}
-.hint{font-size:12px;color:#666}
-.title{text-align:center;grid-column:1/-1}
-</style>
+    /* 前景工具样式 (原) */
+    .panel{background:#fff;padding:14px 12px;border-radius:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;width:100%;max-width:700px;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+    .control{display:flex;flex-direction:column;gap:4px;}
+    label{font-size:13px;font-weight:500;color:#1e293b;}
+    input,button,select{padding:8px 10px;border-radius:8px;border:1px solid #d1d5db;font-size:14px;background:#fff;width:100%;}
+    button{background:#2563eb;color:#fff;border:none;cursor:pointer;font-weight:500;transition:background 0.15s;}
+    button:active{background:#1d4ed8;}
+    .hint{font-size:11px;color:#6b7280;margin-top:2px;}
+    .title{text-align:center;grid-column:1/-1;margin-bottom:4px;}
+    .title h2{font-size:18px;font-weight:600;color:#0f172a;letter-spacing:-0.3px;}
+    .title h2 span{color:#2563eb;}
+
+    .preview-wrapper{
+      width:100%;
+      max-width:700px;
+      background:#fff;
+      border-radius:16px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.08);
+      padding:8px;
+      border:2px solid #2563eb;
+      box-sizing:border-box;
+    }
+    .preview-box{
+      position:relative;
+      width:100%;
+      aspect-ratio: 1080 / 641;
+      background:#ffffff;
+      border-radius:10px;
+      overflow:hidden;
+    }
+    #canvas{
+      position:absolute;
+      width:100%;
+      height:100%;
+      background:transparent;
+      z-index:2;
+      touch-action: none;
+    }
+    .hint-mobile{
+      font-size:11px;
+      color:#94a3b8;
+      text-align:center;
+      padding:6px 0 2px;
+    }
+    @media (max-width:480px){
+      .panel{grid-template-columns:1fr 1fr;gap:8px;}
+      .control{min-width:0;}
+      .title h2{font-size:16px;}
+    }
+    input[type="range"]{ accent-color: #2563eb; }
+    .weight-badge{
+      display:inline-block;
+      background:#eef2ff;
+      color:#2563eb;
+      padding:0 8px;
+      border-radius:4px;
+      font-size:12px;
+      font-weight:600;
+    }
+    .weight-input-row{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .weight-input-row input[type="number"]{
+      width:70px;
+      flex-shrink:0;
+      padding:6px 4px;
+      text-align:center;
+      font-weight:600;
+    }
+    .weight-input-row input[type="range"]{
+      flex:1;
+    }
+
+    /* 模板工具样式 (原) */
+    .template-app {
+      background: #ffffff;
+      border-radius: 32px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+      padding: 28px 30px 20px;
+      width: 100%;
+      max-width: 700px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      border: 1px solid #e4dee8;
+    }
+    .template-app .header-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .template-app h1 {
+      color: #1f1a2b;
+      font-weight: 550;
+      font-size: 1.6rem;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .template-app .mode-tabs {
+      display: flex;
+      gap: 6px;
+      background: #edebf2;
+      padding: 4px;
+      border-radius: 48px;
+    }
+    .template-app .mode-tab {
+      background: transparent;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #3b334b;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: none;
+      border: 1px solid transparent;
+    }
+    .template-app .mode-tab.active {
+      background: white;
+      color: #1f1a2b;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      border-color: #d6cedf;
+    }
+    .template-app .mode-tab:hover {
+      background: #dfdae8;
+    }
+    .template-app .mode-tab.active:hover {
+      background: white;
+    }
+    .template-app .control-panel {
+      background: #f6f4fa;
+      border-radius: 24px;
+      padding: 16px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px 18px;
+      border: 1px solid #e1dae8;
+    }
+    .template-app .file-uploader {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      padding: 6px 16px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.15s;
+      border: 1px solid #d6cedf;
+    }
+    .template-app .file-uploader:hover {
+      background: #f0edf5;
+    }
+    .template-app .file-uploader label {
+      color: #2c253a;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+    .template-app .file-uploader input {
+      display: none;
+    }
+    .template-app .slider-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      padding: 4px 14px 4px 16px;
+      border-radius: 40px;
+      border: 1px solid #d6cedf;
+    }
+    .template-app .slider-group span {
+      color: #2c253a;
+      font-size: 0.85rem;
+      min-width: 36px;
+      white-space: nowrap;
+    }
+    .template-app .slider-group input[type="range"] {
+      width: 100px;
+      cursor: pointer;
+      background: transparent;
+      accent-color: #6a5e82;
+    }
+    .template-app .slider-group input[type="number"] {
+      width: 48px;
+      padding: 4px 2px 4px 6px;
+      border-radius: 20px;
+      border: 1px solid #d6cedf;
+      background: white;
+      font-size: 0.85rem;
+      text-align: center;
+      font-weight: 500;
+      color: #1f1a2b;
+      outline: none;
+      transition: 0.15s;
+    }
+    .template-app .slider-group input[type="number"]:focus {
+      border-color: #8f7ea8;
+      box-shadow: 0 0 0 2px rgba(106, 94, 130, 0.2);
+    }
+    .template-app .color-input {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      padding: 4px 14px 4px 16px;
+      border-radius: 40px;
+      border: 1px solid #d6cedf;
+    }
+    .template-app .color-input span {
+      color: #2c253a;
+      font-size: 0.9rem;
+    }
+    .template-app .color-input input[type="color"] {
+      width: 36px;
+      height: 28px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+    }
+    .template-app .action-btn {
+      background: #e4ddf0;
+      border: none;
+      color: #201b2b;
+      font-weight: 600;
+      padding: 8px 22px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.3px;
+      border: 1px solid #cdc3db;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      flex-shrink: 0;
+    }
+    .template-app .action-btn:hover {
+      background: #d5cbe6;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    }
+    .template-app .action-btn:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+    .template-app .action-btn.primary {
+      background: #6a5e82;
+      border-color: #5a4e6b;
+      color: white;
+    }
+    .template-app .action-btn.primary:hover {
+      background: #7b6e96;
+    }
+    .template-app .canvas-wrapper {
+      background: #f0ecf5;
+      border-radius: 24px;
+      padding: 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #e0dae6;
+      position: relative;
+      min-height: auto;
+    }
+    .template-app canvas {
+      max-width: 100%;
+      max-height: 500px;
+      display: block;
+      border-radius: 16px;
+      background: #ffffff;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+      border: 1px solid #dbd4e2;
+      width: auto;
+      height: auto;
+    }
+    .template-app .info-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      color: #4b435e;
+      font-size: 0.9rem;
+      padding: 0 6px;
+      gap: 8px;
+    }
+    .template-app .badge {
+      background: #eae5f2;
+      padding: 4px 16px;
+      border-radius: 30px;
+      color: #2f273f;
+      border: 1px solid #d5cddf;
+      font-size: 0.85rem;
+    }
+    .template-app .thumbnails {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 8px 0;
+    }
+    .template-app .thumb-item {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      overflow: hidden;
+      transition: 0.15s;
+      background: #eae5f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #7b718d;
+      flex-shrink: 0;
+    }
+    .template-app .thumb-item.active {
+      border-color: #6a5e82;
+      box-shadow: 0 0 0 2px rgba(106, 94, 130, 0.3);
+    }
+    .template-app .thumb-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .template-app footer {
+      color: #7b718d;
+      text-align: center;
+      font-size: 0.8rem;
+      margin-top: 6px;
+      border-top: 1px solid #e2dce8;
+      padding-top: 12px;
+    }
+    .template-app .slider-group input[type="number"]::-webkit-outer-spin-button,
+    .template-app .slider-group input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .template-app .slider-group input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    .template-app .hidden {
+      display: none !important;
+    }
+    .template-app .control-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-left: auto;
+      flex-wrap: wrap;
+    }
+
+    /* 响应式调整 */
+    @media (max-width: 600px) {
+      .template-app .control-panel { flex-direction: column; align-items: stretch; }
+      .template-app .control-right { margin-left: 0; justify-content: center; }
+      .template-app .slider-group input[type="range"] { width: 80px; }
+      .template-app .header-row { flex-direction: column; align-items: stretch; }
+      .template-app .mode-tabs { align-self: flex-start; }
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="panel">
-  <div class="title"><h2>⌨️ 多布局 1:1 精准重合工具</h2></div>
-  <div class="control">
-    <label>选择布局</label>
-    <select id="layout">
-      <option value="9">9键键盘</option>
-      <option value="9v2">9键2</option>
-      <option value="26" selected>26键键盘</option>
-      <option value="num">数字键盘</option>
-      <option value="num2">123键2（图一）</option>
-      <option value="stroke">笔画键盘（图二）</option>
-      <option value="handwrite">手写键盘（图三）</option>
-      <option value="symbol">符号键盘（图四）</option>
-      <option value="jp9">日文九键</option>
-      <option value="jp26">日文26键</option>
-    </select>
+<!-- 切换按钮 -->
+<div class="tab-bar">
+  <button class="tab-btn active" data-page="page1">⌨️ 前景工具</button>
+  <button class="tab-btn" data-page="page2">🧩 模板生成器</button>
+</div>
+
+<!-- ======== 页面1: 前景工具 ======== -->
+<div id="page1" class="page active">
+  <div class="panel">
+    <div class="title"><h2>⌨️ <span>昀の前景</span> · 多布局 1:1 精准工具</h2></div>
+    <div class="control">
+      <label>选择布局</label>
+      <select id="layout">
+        <option value="9">9键键盘</option>
+        <option value="9v2">9键2</option>
+        <option value="26" selected>26键键盘</option>
+        <option value="num">数字键盘</option>
+        <option value="num2">123键2（图一）</option>
+        <option value="stroke">笔画键盘（图二）</option>
+        <option value="handwrite">手写键盘（图三）</option>
+        <option value="symbol">符号键盘（图四）</option>
+        <option value="jp9">日文九键</option>
+        <option value="jp26">日文26键</option>
+      </select>
+    </div>
+    <div class="control">
+      <label>字母大小写</label>
+      <select id="caseMode">
+        <option value="upper" selected>大写 A</option>
+        <option value="lower">小写 a</option>
+      </select>
+    </div>
+    <div class="control">
+      <label>上传字体</label>
+      <input type="file" id="fontInput" accept=".ttf,.otf">
+    </div>
+    <div class="control">
+      <label>字体颜色</label>
+      <input type="color" id="color" value="#000000">
+    </div>
+    <div class="control">
+      <label>粗细</label>
+      <div class="weight-input-row">
+        <input type="range" id="weight" min="10" max="1200" step="5" value="400">
+        <input type="number" id="weightNumber" min="10" max="1200" value="400">
+      </div>
+    </div>
+    <div class="control">
+      <label>大小 <span class="weight-badge" id="sizeValue">48</span></label>
+      <input type="range" id="fontSize" min="16" max="100" step="1" value="48">
+    </div>
+    <div class="control" style="grid-column:1/-1;">
+      <button id="export">✅ 导出 1080×641 透明PNG</button>
+      <div class="hint">字母1:1对应底图位置，无乱码</div>
+    </div>
   </div>
-  <div class="control">
-    <label>字母大小写</label>
-    <select id="caseMode">
-      <option value="upper" selected>大写 A</option>
-      <option value="lower">小写 a</option>
-    </select>
-  </div>
-  <div class="control">
-    <label>上传参考底图</label>
-    <input type="file" id="bgInput" accept="image/*">
-  </div>
-  <div class="control">
-    <label>上传字体 (.ttf/.otf)</label>
-    <input type="file" id="fontInput" accept=".ttf,.otf">
-  </div>
-  <div class="control">
-    <label>字体颜色</label>
-    <input type="color" id="color" value="#000000">
-  </div>
-  <div class="control">
-    <label>字体粗细</label>
-    <input type="range" id="weight" min="100" max="900" step="100" value="400">
-  </div>
-  <div class="control">
-    <label>字体大小</label>
-    <input type="range" id="fontSize" min="20" max="100" step="1" value="48">
-  </div>
-  <div class="control">
-    <button id="export">✅ 导出 1080×641 透明PNG</button>
-    <div class="hint">字母1:1对应底图位置，无乱码</div>
+
+  <div class="preview-wrapper">
+    <div class="preview-box">
+      <canvas id="canvas"></canvas>
+    </div>
+    <div class="hint-mobile">← 拖动字母微调位置 · 点击导出高清PNG →</div>
   </div>
 </div>
 
-<div class="preview-box">
-  <img id="bg-img">
-  <canvas id="canvas"></canvas>
+<!-- ======== 页面2: 模板生成器 ======== -->
+<div id="page2" class="page">
+  <div class="template-app">
+    <div class="header-row">
+      <h1>🧩 昀の模板生成器 <span style="font-size: 1.0rem; font-weight: 400; color: #5a4e6b;">批量 · 矩形/正圆</span></h1>
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="rect">▭ 矩形</button>
+        <button class="mode-tab" data-mode="circle">◯ 正圆</button>
+      </div>
+    </div>
+    
+    <div class="control-panel" id="controlPanel">
+      <div class="file-uploader">
+        <label>
+          📁 导入图片
+          <input type="file" id="uploadInput" accept="image/*" multiple>
+        </label>
+      </div>
+      
+      <div class="slider-group" id="radiusGroupRect">
+        <span>圆角</span>
+        <input type="range" id="radiusSliderRect" min="0" max="60" value="20" step="1">
+        <input type="number" id="radiusNumberRect" min="0" max="60" value="20" step="1">
+      </div>
+      <div class="slider-group" id="gapVerticalGroupRect">
+        <span>上下间距</span>
+        <input type="range" id="gapVerticalSliderRect" min="-50" max="50" value="0" step="1">
+        <input type="number" id="gapVerticalNumberRect" min="-50" max="50" value="0" step="1">
+      </div>
+
+      <div class="slider-group" id="radiusGroupCircle" style="display: none;">
+        <span>圆大小</span>
+        <input type="range" id="radiusSliderCircle" min="0" max="150" value="50" step="1">
+        <input type="number" id="radiusNumberCircle" min="0" max="150" value="50" step="1">
+      </div>
+      
+      <div class="slider-group">
+        <span>间距</span>
+        <input type="range" id="gapSlider" min="0" max="40" value="6" step="1">
+        <input type="number" id="gapNumber" min="0" max="40" value="6" step="1">
+      </div>
+
+      <div class="control-right">
+        <div class="color-input">
+          <span>颜色</span>
+          <input type="color" id="colorPicker" value="#000000">
+        </div>
+        <button class="action-btn primary" id="exportAllBtn">⬇️ 下载</button>
+      </div>
+    </div>
+    
+    <div class="canvas-wrapper">
+      <canvas id="mainCanvas"></canvas>
+    </div>
+    
+    <div class="info-bar">
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <span class="badge" id="rectCount">识别到 0 个图块</span>
+        <span class="badge" id="imageIndex">图片 0 / 0</span>
+      </div>
+    </div>
+
+    <div class="thumbnails" id="thumbnailsContainer"></div>
+
+    <footer>导入多张图片 → 点击缩略图切换编辑 → 调整参数 → 点击下载</footer>
+  </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script>
-const W = 1080, H = 641;
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-const bgImg = document.getElementById('bg-img');
+  (function(){
+    // ===== 页面切换 =====
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const pages = {
+      page1: document.getElementById('page1'),
+      page2: document.getElementById('page2')
+    };
 
-// 原9键
-const keys9 = [
-  {t:'ABC', x:540, y:96},{t:'DEF', x:810, y:96},
-  {t:'GHI', x:270, y:256},{t:'JKL', x:540, y:256},{t:'MNO', x:810, y:256},
-  {t:'PQRS', x:270, y:416},{t:'TUV', x:540, y:416},{t:'WXYZ', x:810, y:416}
-];
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const target = this.dataset.page;
+        Object.keys(pages).forEach(key => {
+          pages[key].classList.toggle('active', key === target);
+        });
+        // 切换后刷新canvas尺寸
+        setTimeout(() => {
+          if (target === 'page1') {
+            // 前景工具重绘
+            const evt = new Event('resize');
+            window.dispatchEvent(evt);
+          } else if (target === 'page2') {
+            // 模板工具调整大小
+            if (window.resizeCanvasToFit) window.resizeCanvasToFit();
+          }
+        }, 50);
+      });
+    });
 
-// 9键2
-const keys9v2 = [
-  // 第一行
-  {t:'分词', x:270, y:96},
-  {t:'ABC', x:540, y:96},
-  {t:'DEF', x:810, y:96},
-  {t:'删除', x:1000, y:96},
-  // 第二行
-  {t:'GHI', x:270, y:256},
-  {t:'JKL', x:540, y:256},
-  {t:'MNO', x:810, y:256},
-  {t:'清空', x:1000, y:256},
-  // 第三行
-  {t:'PQRS', x:270, y:416},
-  {t:'TUV', x:540, y:416},
-  {t:'WXYZ', x:810, y:416},
-  {t:'发送', x:1000, y:480},
-  // 第四行
-  {t:'符', x:80, y:570},
-  {t:'123', x:270, y:570},
-  {t:'空格', x:540, y:570},
-  {t:'c/n', x:810, y:570}
-];
+    // =============================================
+    // 前景工具代码 (原样)
+    // =============================================
+    (function foregroundInit() {
+      const W = 1080, H = 641;
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
 
-// 26键
-const keys26 = [
-  // 第一行 Q W E R T Y U I O P
-  {t:'Q', x:50, y:90},
-  {t:'W', x:160, y:90},
-  {t:'E', x:270, y:90},
-  {t:'R', x:380, y:90},
-  {t:'T', x:490, y:90},
-  {t:'Y', x:600, y:90},
-  {t:'U', x:710, y:90},
-  {t:'I', x:820, y:90},
-  {t:'O', x:930, y:90},
-  {t:'P', x:1040, y:90},
+      const keys9 = [
+        {t:'ABC', x:540, y:96},{t:'DEF', x:810, y:96},
+        {t:'GHI', x:270, y:256},{t:'JKL', x:540, y:256},{t:'MNO', x:810, y:256},
+        {t:'PQRS', x:270, y:416},{t:'TUV', x:540, y:416},{t:'WXYZ', x:810, y:416}
+      ];
+      const keys9v2 = [
+        {t:'分词', x:270, y:96},{t:'ABC', x:540, y:96},{t:'DEF', x:810, y:96},{t:'删除', x:1000, y:96},
+        {t:'GHI', x:270, y:256},{t:'JKL', x:540, y:256},{t:'MNO', x:810, y:256},{t:'清空', x:1000, y:256},
+        {t:'PQRS', x:270, y:416},{t:'TUV', x:540, y:416},{t:'WXYZ', x:810, y:416},{t:'发送', x:1000, y:480},
+        {t:'符', x:80, y:570},{t:'123', x:270, y:570},{t:'空格', x:540, y:570},{t:'c/n', x:810, y:570}
+      ];
+      const keys26 = [
+        {t:'Q', x:50, y:90},{t:'W', x:160, y:90},{t:'E', x:270, y:90},{t:'R', x:380, y:90},{t:'T', x:490, y:90},
+        {t:'Y', x:600, y:90},{t:'U', x:710, y:90},{t:'I', x:820, y:90},{t:'O', x:930, y:90},{t:'P', x:1040, y:90},
+        {t:'A', x:110, y:250},{t:'S', x:220, y:250},{t:'D', x:330, y:250},{t:'F', x:440, y:250},{t:'G', x:550, y:250},
+        {t:'H', x:660, y:250},{t:'J', x:770, y:250},{t:'K', x:880, y:250},{t:'L', x:990, y:250},
+        {t:'大写', x:70, y:410},{t:'Z', x:220, y:410},{t:'X', x:330, y:410},{t:'C', x:440, y:410},{t:'V', x:550, y:410},
+        {t:'B', x:660, y:410},{t:'N', x:770, y:410},{t:'M', x:880, y:410},{t:'删除', x:1000, y:410},
+        {t:'符', x:80, y:570},{t:'123', x:200, y:570},{t:',', x:320, y:570},{t:'空格', x:540, y:570},
+        {t:'。', x:760, y:570},{t:'c/n', x:880, y:570},{t:'发送', x:1000, y:570}
+      ];
+      const keysNum = [
+        {t:'1',x:335,y:155},{t:'2',x:540,y:155},{t:'3',x:745,y:155},{t:'Back',x:950,y:155},
+        {t:'4',x:335,y:315},{t:'5',x:540,y:315},{t:'6',x:745,y:315},{t:'@',x:950,y:315},
+        {t:'7',x:335,y:475},{t:'8',x:540,y:475},{t:'9',x:745,y:475},{t:'.',x:950,y:475},
+        {t:'Fn',x:180,y:590},{t:'Ctrl',x:360,y:590},{t:'0',x:540,y:590},{t:'qq.com',x:745,y:590},{t:'Enter',x:950,y:590}
+      ];
+      const keysNum2 = [
+        {t:'1', x:270, y:130},{t:'2', x:540, y:130},{t:'3', x:810, y:130},{t:'删除', x:1000, y:130},
+        {t:'4', x:270, y:290},{t:'5', x:540, y:290},{t:'6', x:810, y:290},{t:'@', x:1000, y:290},
+        {t:'7', x:270, y:450},{t:'8', x:540, y:450},{t:'9', x:810, y:450},{t:'.', x:1000, y:450},
+        {t:'符', x:80, y:590},{t:'返回', x:270, y:590},{t:'0', x:540, y:590},{t:'空格', x:810, y:590},{t:'发送', x:1000, y:590}
+      ];
+      const keysStroke = [
+        {t:'一', x:270, y:130},{t:'丨', x:540, y:130},{t:'丿', x:810, y:130},{t:'删除', x:1000, y:130},
+        {t:'丶', x:270, y:290},{t:'乙', x:540, y:290},{t:'*', x:810, y:290},{t:'清空', x:1000, y:290},
+        {t:'\' ', x:270, y:450},{t:':', x:540, y:450},{t:';', x:810, y:450},{t:'发送', x:1000, y:450},
+        {t:'符', x:80, y:590},{t:'123', x:270, y:590},{t:'空格', x:540, y:590},{t:'c/n', x:810, y:590}
+      ];
+      const keysHandwrite = [
+        {t:'删除', x:1000, y:130},{t:'清空', x:1000, y:290},{t:'发送', x:1000, y:450},
+        {t:'符', x:80, y:590},{t:'123', x:270, y:590},{t:'空格', x:540, y:590},{t:'c/n', x:810, y:590}
+      ];
+      const keysSymbol = [
+        {t:'返回', x:80, y:590},{t:'上', x:270, y:590},{t:'下', x:540, y:590},{t:'删除', x:950, y:590}
+      ];
+      const keysJp9 = [
+        {t:'あ', x:270, y:130},{t:'か', x:540, y:130},{t:'さ', x:810, y:130},
+        {t:'た', x:270, y:290},{t:'な', x:540, y:290},{t:'は', x:810, y:290},
+        {t:'ま', x:270, y:450},{t:'や', x:540, y:450},{t:'ら', x:810, y:450},
+        {t:'、。?!', x:80, y:590},{t:'^^', x:270, y:590},{t:'わ_', x:540, y:590},{t:'ABC', x:810, y:590},{t:'改行', x:1000, y:450}
+      ];
+      const keysJp26 = [
+        {t:'本', x:50, y:90},{t:'ア', x:160, y:90},{t:'ス', x:270, y:90},{t:'デ', x:380, y:90},{t:'サ', x:490, y:90},
+        {t:'ザ', x:600, y:90},{t:'レ', x:710, y:90},{t:'ワ', x:820, y:90},{t:'ガ', x:930, y:90},{t:'す', x:1040, y:90},
+        {t:'キ', x:110, y:250},{t:'不', x:220, y:250},{t:'ブ', x:330, y:250},{t:'ヤ', x:440, y:250},{t:'ル', x:550, y:250},
+        {t:'ブ', x:660, y:250},{t:'リ', x:770, y:250},{t:'ン', x:880, y:250},{t:'レ', x:990, y:250},
+        {t:'↑', x:70, y:410},{t:'フ', x:220, y:410},{t:'ス', x:330, y:410},{t:'ン', x:440, y:410},{t:'ソ', x:550, y:410},
+        {t:'ザ', x:660, y:410},{t:'ザ', x:770, y:410},{t:'ブ', x:880, y:410},{t:'⌫', x:1000, y:410},
+        {t:'123', x:80, y:570},{t:'😊', x:220, y:570},{t:'空格', x:540, y:570},{t:'検索', x:1000, y:570}
+      ];
 
-  // 第二行 A S D F G H J K L
-  {t:'A', x:110, y:250},
-  {t:'S', x:220, y:250},
-  {t:'D', x:330, y:250},
-  {t:'F', x:440, y:250},
-  {t:'G', x:550, y:250},
-  {t:'H', x:660, y:250},
-  {t:'J', x:770, y:250},
-  {t:'K', x:880, y:250},
-  {t:'L', x:990, y:250},
+      let current = keys26;
+      let customFont = null;
+      let drag = null;
+      let usingCustomFont = false;
 
-  // 第三行 大写 Z X C V B N M 删除
-  {t:'大写', x:70, y:410},
-  {t:'Z', x:220, y:410},
-  {t:'X', x:330, y:410},
-  {t:'C', x:440, y:410},
-  {t:'V', x:550, y:410},
-  {t:'B', x:660, y:410},
-  {t:'N', x:770, y:410},
-  {t:'M', x:880, y:410},
-  {t:'删除', x:1000, y:410},
+      function initCanvasSize() {
+        canvas.width = W;
+        canvas.height = H;
+      }
+      initCanvasSize();
 
-  // 第四行 符 123 , 空格 。 c/n 发送
-  {t:'符', x:80, y:570},
-  {t:'123', x:200, y:570},
-  {t:',', x:320, y:570},
-  {t:'空格', x:540, y:570},
-  {t:'。', x:760, y:570},
-  {t:'c/n', x:880, y:570},
-  {t:'发送', x:1000, y:570}
-];
+      const weightSlider = document.getElementById('weight');
+      const weightNumber = document.getElementById('weightNumber');
+      const sizeSlider = document.getElementById('fontSize');
+      const sizeDisplay = document.getElementById('sizeValue');
 
-// 数字键盘
-const keysNum = [
-  {t:'1',x:335,y:155},{t:'2',x:540,y:155},{t:'3',x:745,y:155},{t:'Back',x:950,y:155},
-  {t:'4',x:335,y:315},{t:'5',x:540,y:315},{t:'6',x:745,y:315},{t:'@',x:950,y:315},
-  {t:'7',x:335,y:475},{t:'8',x:540,y:475},{t:'9',x:745,y:475},{t:'.',x:950,y:475},
-  {t:'Fn',x:180,y:590},{t:'Ctrl',x:360,y:590},{t:'0',x:540,y:590},{t:'qq.com',x:745,y:590},{t:'Enter',x:950,y:590}
-];
+      weightSlider.addEventListener('input', () => {
+        const val = parseInt(weightSlider.value, 10);
+        weightNumber.value = val;
+        draw();
+      });
 
-// 图一：123键2（数字键盘2）
-const keysNum2 = [
-  // 第一行
-  {t:'1', x:270, y:130},
-  {t:'2', x:540, y:130},
-  {t:'3', x:810, y:130},
-  {t:'删除', x:1000, y:130},
-  // 第二行
-  {t:'4', x:270, y:290},
-  {t:'5', x:540, y:290},
-  {t:'6', x:810, y:290},
-  {t:'@', x:1000, y:290},
-  // 第三行
-  {t:'7', x:270, y:450},
-  {t:'8', x:540, y:450},
-  {t:'9', x:810, y:450},
-  {t:'.', x:1000, y:450},
-  // 第四行
-  {t:'符', x:80, y:590},
-  {t:'返回', x:270, y:590},
-  {t:'0', x:540, y:590},
-  {t:'空格', x:810, y:590},
-  {t:'发送', x:1000, y:590}
-];
+      weightNumber.addEventListener('input', () => {
+        let val = parseInt(weightNumber.value, 10);
+        if (isNaN(val)) return;
+        val = Math.max(10, Math.min(1200, val));
+        weightNumber.value = val;
+        weightSlider.value = val;
+        draw();
+      });
 
-// 图二：笔画键盘
-const keysStroke = [
-  // 第一行
-  {t:'一', x:270, y:130},
-  {t:'丨', x:540, y:130},
-  {t:'丿', x:810, y:130},
-  {t:'删除', x:1000, y:130},
-  // 第二行
-  {t:'丶', x:270, y:290},
-  {t:'乙', x:540, y:290},
-  {t:'*', x:810, y:290},
-  {t:'清空', x:1000, y:290},
-  // 第三行
-  {t:'\' ', x:270, y:450},
-  {t:':', x:540, y:450},
-  {t:';', x:810, y:450},
-  {t:'发送', x:1000, y:450},
-  // 第四行
-  {t:'符', x:80, y:590},
-  {t:'123', x:270, y:590},
-  {t:'空格', x:540, y:590},
-  {t:'c/n', x:810, y:590}
-];
+      weightNumber.addEventListener('blur', () => {
+        let val = parseInt(weightNumber.value, 10);
+        if (isNaN(val)) { val = 400; }
+        val = Math.max(10, Math.min(1200, val));
+        weightNumber.value = val;
+        weightSlider.value = val;
+        draw();
+      });
 
-// 图三：手写键盘
-const keysHandwrite = [
-  // 右侧列
-  {t:'删除', x:1000, y:130},
-  {t:'清空', x:1000, y:290},
-  {t:'发送', x:1000, y:450},
-  // 底部行
-  {t:'符', x:80, y:590},
-  {t:'123', x:270, y:590},
-  {t:'空格', x:540, y:590},
-  {t:'c/n', x:810, y:590}
-];
+      sizeSlider.addEventListener('input', () => {
+        sizeDisplay.textContent = sizeSlider.value;
+        draw();
+      });
 
-// 图四：符号键盘
-const keysSymbol = [
-  // 底部行
-  {t:'返回', x:80, y:590},
-  {t:'上', x:270, y:590},
-  {t:'下', x:540, y:590},
-  {t:'删除', x:950, y:590}
-];
+      function drawChar(text, x, y, fontSize, weight, color) {
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = color;
 
-// 日文九键
-const keysJp9 = [
-  // 第一行
-  {t:'あ', x:270, y:130},
-  {t:'か', x:540, y:130},
-  {t:'さ', x:810, y:130},
-  // 第二行
-  {t:'た', x:270, y:290},
-  {t:'な', x:540, y:290},
-  {t:'は', x:810, y:290},
-  // 第三行
-  {t:'ま', x:270, y:450},
-  {t:'や', x:540, y:450},
-  {t:'ら', x:810, y:450},
-  // 第四行
-  {t:'、。?!', x:80, y:590},
-  {t:'^^', x:270, y:590},
-  {t:'わ_', x:540, y:590},
-  {t:'ABC', x:810, y:590},
-  {t:'改行', x:1000, y:450}
-];
-
-// 日文26键
-const keysJp26 = [
-  // 第一行
-  {t:'本', x:50, y:90},
-  {t:'ア', x:160, y:90},
-  {t:'ス', x:270, y:90},
-  {t:'デ', x:380, y:90},
-  {t:'サ', x:490, y:90},
-  {t:'ザ', x:600, y:90},
-  {t:'レ', x:710, y:90},
-  {t:'ワ', x:820, y:90},
-  {t:'ガ', x:930, y:90},
-  {t:'す', x:1040, y:90},
-
-  // 第二行
-  {t:'キ', x:110, y:250},
-  {t:'不', x:220, y:250},
-  {t:'ブ', x:330, y:250},
-  {t:'ヤ', x:440, y:250},
-  {t:'ル', x:550, y:250},
-  {t:'ブ', x:660, y:250},
-  {t:'リ', x:770, y:250},
-  {t:'ン', x:880, y:250},
-  {t:'レ', x:990, y:250},
-
-  // 第三行
-  {t:'↑', x:70, y:410},
-  {t:'フ', x:220, y:410},
-  {t:'ス', x:330, y:410},
-  {t:'ン', x:440, y:410},
-  {t:'ソ', x:550, y:410},
-  {t:'ザ', x:660, y:410},
-  {t:'ザ', x:770, y:410},
-  {t:'ブ', x:880, y:410},
-  {t:'⌫', x:1000, y:410},
-
-  // 第四行
-  {t:'123', x:80, y:570},
-  {t:'😊', x:220, y:570},
-  {t:'空格', x:540, y:570},
-  {t:'検索', x:1000, y:570}
-];
-
-let current = keys26;
-let customFont = null;
-let drag = null;
-
-function init(){
-  canvas.width = W;
-  canvas.height = H;
-  draw();
-}
-
-// 安全绘制，杜绝乱码 / 显示异常
-function draw(){
-  ctx.clearRect(0, 0, W, H);
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = document.getElementById('color').value;
-
-  const fontSize = document.getElementById('fontSize').value;
-  const weight = document.getElementById('weight').value;
-  const fontFace = customFont ? 'CustomFont' : 'system-ui, -apple-system, sans-serif';
-  ctx.font = `${weight} ${fontSize}px ${fontFace}`;
-
-  // 大小写模式（仅对字母生效，中文/符号/日文保持原样）
-  const caseMode = document.getElementById('caseMode').value;
-
-  current.forEach(k => {
-    let txt = k.t;
-    // 仅对纯字母内容切换大小写
-    if (current === keys9 || current === keys9v2 || current === keys26 || current === keysNum) {
-      if (/^[a-zA-Z]+$/.test(txt)) {
-        if (caseMode === 'lower') {
-          txt = txt.toLowerCase();
+        const fontFace = (customFont && usingCustomFont) ? 'CustomFont' : '"SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+        
+        if (customFont && usingCustomFont) {
+          ctx.font = `400 ${fontSize}px ${fontFace}`;
+          const offset = 0.05 + (weight / 1200) * 1.5;
+          const strokes = Math.max(1, Math.round(weight / 100));
+          
+          for (let i = 0; i < strokes; i++) {
+            const angle = (i / strokes) * Math.PI * 2;
+            const dx = Math.cos(angle) * offset;
+            const dy = Math.sin(angle) * offset;
+            ctx.fillText(text, x + dx, y + dy);
+          }
+          ctx.fillText(text, x, y);
         } else {
-          txt = txt.toUpperCase();
+          let clampedWeight = Math.max(100, Math.min(900, weight));
+          ctx.font = `${clampedWeight} ${fontSize}px ${fontFace}`;
+          ctx.fillText(text, x, y);
+        }
+        
+        ctx.restore();
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        const fontSize = parseFloat(sizeSlider.value);
+        const weight = parseInt(weightSlider.value, 10);
+        const color = document.getElementById('color').value;
+        const caseMode = document.getElementById('caseMode').value;
+        const isAlphaLayout = (current === keys9 || current === keys9v2 || current === keys26 || current === keysNum);
+
+        current.forEach(k => {
+          let txt = k.t;
+          if (isAlphaLayout && /^[a-zA-Z]+$/.test(txt)) {
+            txt = caseMode === 'lower' ? txt.toLowerCase() : txt.toUpperCase();
+          }
+          drawChar(txt, k.x, k.y, fontSize, weight, color);
+        });
+      }
+
+      document.getElementById('layout').addEventListener('change', e => {
+        const val = e.target.value;
+        if(val==='9') current=keys9;
+        else if(val==='9v2') current=keys9v2;
+        else if(val==='26') current=keys26;
+        else if(val==='num') current=keysNum;
+        else if(val==='num2') current=keysNum2;
+        else if(val==='stroke') current=keysStroke;
+        else if(val==='handwrite') current=keysHandwrite;
+        else if(val==='symbol') current=keysSymbol;
+        else if(val==='jp9') current=keysJp9;
+        else if(val==='jp26') current=keysJp26;
+        draw();
+      });
+
+      document.getElementById('caseMode').addEventListener('change', draw);
+      document.getElementById('color').addEventListener('input', draw);
+
+      document.getElementById('fontInput').addEventListener('change', e => {
+        const f = e.target.files[0];
+        if(!f) return;
+        const r = new FileReader();
+        r.onload = ev => {
+          const ff = new FontFace('CustomFont', ev.target.result);
+          ff.load().then(font => {
+            document.fonts.add(font);
+            customFont = font;
+            usingCustomFont = true;
+            draw();
+            alert('✅ 字体加载成功！粗细通过多次描边模拟，拖动滑块或输入数值即可调整');
+          }).catch(() => alert('❌ 字体加载失败，将使用系统字体'));
+        };
+        r.readAsArrayBuffer(f);
+      });
+
+      function getCanvasCoords(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        let clientX, clientY;
+        if (e.touches) {
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+          e.preventDefault();
+        } else {
+          clientX = e.clientX;
+          clientY = e.clientY;
+        }
+        const x = (clientX - rect.left) * scaleX;
+        const y = (clientY - rect.top) * scaleY;
+        return { x, y };
+      }
+
+      function hitTest(e) {
+        const { x, y } = getCanvasCoords(e);
+        return current.find(k => Math.hypot(x - k.x, y - k.y) < 36) || null;
+      }
+
+      function onPointerDown(e) {
+        e.preventDefault();
+        drag = hitTest(e);
+        if (drag) {
+          drag._lastX = getCanvasCoords(e).x;
+          drag._lastY = getCanvasCoords(e).y;
         }
       }
-    }
-    ctx.fillText(txt, k.x, k.y);
-  });
-}
 
-// 切换布局
-document.getElementById('layout').addEventListener('change', e=>{
-  if(e.target.value==='9') current=keys9;
-  else if(e.target.value==='9v2') current=keys9v2;
-  else if(e.target.value==='26') current=keys26;
-  else if(e.target.value==='num') current=keysNum;
-  else if(e.target.value==='num2') current=keysNum2;
-  else if(e.target.value==='stroke') current=keysStroke;
-  else if(e.target.value==='handwrite') current=keysHandwrite;
-  else if(e.target.value==='symbol') current=keysSymbol;
-  else if(e.target.value==='jp9') current=keysJp9;
-  else if(e.target.value==='jp26') current=keysJp26;
-  draw();
-});
+      function onPointerMove(e) {
+        if (!drag) return;
+        e.preventDefault();
+        const { x, y } = getCanvasCoords(e);
+        const dx = x - drag._lastX;
+        const dy = y - drag._lastY;
+        if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
+          drag.x += dx;
+          drag.y += dy;
+          drag._lastX = x;
+          drag._lastY = y;
+          draw();
+        }
+      }
 
-// 切换大小写
-document.getElementById('caseMode').addEventListener('change', draw);
+      function onPointerUp(e) {
+        if (drag) {
+          delete drag._lastX;
+          delete drag._lastY;
+          drag = null;
+        }
+      }
 
-// 背景图
-document.getElementById('bgInput').addEventListener('change', e=>{
-  const f=e.target.files[0];
-  if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{ bgImg.src=ev.target.result; };
-  r.readAsDataURL(f);
-});
+      canvas.addEventListener('mousedown', onPointerDown);
+      window.addEventListener('mousemove', (e) => {
+        if (!drag) return;
+        onPointerMove(e);
+      });
+      window.addEventListener('mouseup', onPointerUp);
 
-// 自定义字体
-document.getElementById('fontInput').addEventListener('change', e=>{
-  const f=e.target.files[0];
-  if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{
-    const ff = new FontFace('CustomFont', ev.target.result);
-    ff.load().then(font => {
-      document.fonts.add(font);
-      customFont = font;
+      canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+      canvas.addEventListener('touchmove', onPointerMove, { passive: false });
+      canvas.addEventListener('touchend', onPointerUp, { passive: false });
+      canvas.addEventListener('touchcancel', onPointerUp, { passive: false });
+
+      document.getElementById('export').addEventListener('click', () => {
+        try {
+          draw();
+          canvas.toBlob(blob => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            const typ = document.getElementById('layout').value;
+            let name = '';
+            if(typ==='9') name='9键';
+            else if(typ==='9v2') name='9键2';
+            else if(typ==='26') name='26键';
+            else if(typ==='num') name='数字键盘';
+            else if(typ==='num2') name='123键2';
+            else if(typ==='stroke') name='笔画键盘';
+            else if(typ==='handwrite') name='手写键盘';
+            else if(typ==='symbol') name='符号键盘';
+            else if(typ==='jp9') name='日文九键';
+            else if(typ==='jp26') name='日文26键';
+            else name='键盘';
+            a.download = name + '_1080x641.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+            alert('✅ 导出成功！1:1精准透明图');
+          }, 'image/png', 1.0);
+        } catch(e) {
+          alert('导出异常：'+e.message);
+        }
+      });
+
       draw();
-      alert('✅ 字体加载成功');
-    }).catch(()=>alert('❌ 字体加载失败'));
-  };
-  r.readAsArrayBuffer(f);
-});
+    })();
 
-// 拖动字母微调
-function hit(e){
-  const r=canvas.getBoundingClientRect();
-  const x=(e.clientX-r.left)*(W/r.width);
-  const y=(e.clientY-r.top)*(H/r.height);
-  return current.find(k=>Math.hypot(x-k.x,y-k.y)<36)||null;
-}
-canvas.addEventListener('mousedown',e=>{ drag=hit(e); });
-window.addEventListener('mousemove',e=>{
-  if(!drag)return;
-  drag.x += e.movementX;
-  drag.y += e.movementY;
-  draw();
-});
-window.addEventListener('mouseup',()=>{ drag=null; });
+    // =============================================
+    // 模板工具代码 (原样)
+    // =============================================
+    (function templateInit() {
+      const canvas = document.getElementById('mainCanvas');
+      const ctx = canvas.getContext('2d');
+      const uploadInput = document.getElementById('uploadInput');
+      const gapSlider = document.getElementById('gapSlider');
+      const gapNumber = document.getElementById('gapNumber');
+      const colorPicker = document.getElementById('colorPicker');
+      const exportAllBtn = document.getElementById('exportAllBtn');
+      const rectCountSpan = document.getElementById('rectCount');
+      const imageIndexSpan = document.getElementById('imageIndex');
+      const thumbnailsContainer = document.getElementById('thumbnailsContainer');
 
-// 导出
-document.getElementById('export').addEventListener('click', ()=>{
-  try {
-    canvas.toBlob(blob=>{
-      const a=document.createElement('a');
-      a.href=URL.createObjectURL(blob);
-      const typ=document.getElementById('layout').value;
-      let name = '';
-      if(typ==='9') name='9键';
-      else if(typ==='9v2') name='9键2';
-      else if(typ==='26键') name='26键';
-      else if(typ==='num') name='数字键盘';
-      else if(typ==='num2') name='123键2';
-      else if(typ==='stroke') name='笔画键盘';
-      else if(typ==='handwrite') name='手写键盘';
-      else if(typ==='symbol') name='符号键盘';
-      else if(typ==='jp9') name='日文九键';
-      else if(typ==='jp26') name='日文26键';
-      a.download=name+'_1080x641.png';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href);
-      alert('✅ 导出成功！1:1精准透明图');
-    },'image/png',1.0);
-  }catch(e){
-    alert('导出异常：'+e.message);
-  }
-});
+      const radiusSliderRect = document.getElementById('radiusSliderRect');
+      const radiusNumberRect = document.getElementById('radiusNumberRect');
+      const gapVerticalSliderRect = document.getElementById('gapVerticalSliderRect');
+      const gapVerticalNumberRect = document.getElementById('gapVerticalNumberRect');
+      const radiusGroupRect = document.getElementById('radiusGroupRect');
+      const gapVerticalGroupRect = document.getElementById('gapVerticalGroupRect');
 
-// 实时刷新
-document.getElementById('color').addEventListener('input', draw);
-document.getElementById('weight').addEventListener('input', draw);
-document.getElementById('fontSize').addEventListener('input', draw);
+      const radiusSliderCircle = document.getElementById('radiusSliderCircle');
+      const radiusNumberCircle = document.getElementById('radiusNumberCircle');
+      const radiusGroupCircle = document.getElementById('radiusGroupCircle');
 
-init();
+      const modeTabs = document.querySelectorAll('.template-app .mode-tab');
+
+      let currentMode = 'rect';
+      let imageItems = [];
+      let currentIndex = -1;
+      let nextId = 0;
+
+      let currentRadiusRect = 20;
+      let currentGapVerticalRect = 0;
+      let currentRadiusPercent = 50;
+      let currentGap = 6;
+      let currentColor = '#000000';
+
+      window.resizeCanvasToFit = function resizeCanvasToFit() {
+        const wrapper = canvas.parentElement;
+        const wrapperWidth = wrapper.clientWidth - 8;
+        const maxHeight = Math.min(window.innerHeight * 0.5, 500);
+        
+        if (currentIndex >= 0 && currentIndex < imageItems.length) {
+          const item = imageItems[currentIndex];
+          const imgRatio = item.originalWidth / item.originalHeight;
+          let w = wrapperWidth;
+          let h = w / imgRatio;
+          if (h > maxHeight) {
+            h = maxHeight;
+            w = h * imgRatio;
+          }
+          canvas.width = Math.floor(w);
+          canvas.height = Math.floor(h);
+          canvas.style.width = canvas.width + 'px';
+          canvas.style.height = canvas.height + 'px';
+        } else {
+          let w = wrapperWidth;
+          let h = Math.min(w * 0.6, maxHeight);
+          canvas.width = Math.floor(w);
+          canvas.height = Math.floor(h);
+          canvas.style.width = canvas.width + 'px';
+          canvas.style.height = canvas.height + 'px';
+        }
+        drawPreview();
+      };
+
+      function setMode(mode) {
+        currentMode = mode;
+        if (mode === 'rect') {
+          radiusGroupRect.style.display = 'flex';
+          gapVerticalGroupRect.style.display = 'flex';
+          radiusGroupCircle.style.display = 'none';
+          document.querySelector('.template-app .mode-tab[data-mode="rect"]').classList.add('active');
+          document.querySelector('.template-app .mode-tab[data-mode="circle"]').classList.remove('active');
+          radiusSliderRect.value = currentRadiusRect;
+          radiusNumberRect.value = currentRadiusRect;
+          gapVerticalSliderRect.value = currentGapVerticalRect;
+          gapVerticalNumberRect.value = currentGapVerticalRect;
+        } else {
+          radiusGroupRect.style.display = 'none';
+          gapVerticalGroupRect.style.display = 'none';
+          radiusGroupCircle.style.display = 'flex';
+          document.querySelector('.template-app .mode-tab[data-mode="circle"]').classList.add('active');
+          document.querySelector('.template-app .mode-tab[data-mode="rect"]').classList.remove('active');
+          radiusSliderCircle.value = currentRadiusPercent;
+          radiusNumberCircle.value = currentRadiusPercent;
+        }
+        drawPreview();
+      }
+
+      modeTabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          const mode = tab.dataset.mode;
+          if (mode === currentMode) return;
+          setMode(mode);
+        });
+      });
+
+      function detectRectangles(tempCanvas) {
+        const width = tempCanvas.width;
+        const height = tempCanvas.height;
+        const ctx2d = tempCanvas.getContext('2d', { willReadFrequently: true });
+        const imageData = ctx2d.getImageData(0, 0, width, height);
+        const data = imageData.data;
+        const visited = new Uint8Array(width * height);
+        const step = 2;
+        const rects = [];
+        
+        for (let y = 0; y < height; y += step) {
+          for (let x = 0; x < width; x += step) {
+            const idx = (y * width + x) * 4;
+            const alpha = data[idx + 3];
+            const visitedIdx = y * width + x;
+            if (alpha > 30 && !visited[visitedIdx]) {
+              const queue = [[x, y]];
+              visited[visitedIdx] = 1;
+              let minX = x, maxX = x, minY = y, maxY = y;
+              while (queue.length > 0) {
+                const [cx, cy] = queue.shift();
+                minX = Math.min(minX, cx);
+                maxX = Math.max(maxX, cx);
+                minY = Math.min(minY, cy);
+                maxY = Math.max(maxY, cy);
+                const neighbors = [[cx-step,cy],[cx+step,cy],[cx,cy-step],[cx,cy+step]];
+                for (const [nx, ny] of neighbors) {
+                  if (nx>=0 && nx<width && ny>=0 && ny<height) {
+                    const nIdx = ny*width+nx;
+                    if (!visited[nIdx] && data[(ny*width+nx)*4+3] > 30) {
+                      visited[nIdx] = 1;
+                      queue.push([nx, ny]);
+                    }
+                  }
+                }
+              }
+              minX = Math.max(0, minX - step/2);
+              minY = Math.max(0, minY - step/2);
+              maxX = Math.min(width-1, maxX + step/2);
+              maxY = Math.min(height-1, maxY + step/2);
+              const w = maxX - minX + 1;
+              const h = maxY - minY + 1;
+              if (w > 8 && h > 8) rects.push({x:minX, y:minY, w:w, h:h});
+            }
+          }
+        }
+        
+        const merged = [];
+        const used = new Array(rects.length).fill(false);
+        for (let i=0; i<rects.length; i++) {
+          if (used[i]) continue;
+          let cur = rects[i];
+          used[i]=true;
+          for (let j=i+1; j<rects.length; j++) {
+            if (used[j]) continue;
+            const c1x = cur.x+cur.w/2, c1y=cur.y+cur.h/2;
+            const c2x = rects[j].x+rects[j].w/2, c2y=rects[j].y+rects[j].h/2;
+            const dx = Math.abs(c1x-c2x), dy=Math.abs(c1y-c2y);
+            const avgW=(cur.w+rects[j].w)/2, avgH=(cur.h+rects[j].h)/2;
+            if (dx < avgW*0.8 && dy < avgH*0.8) {
+              const nx = Math.min(cur.x, rects[j].x);
+              const ny = Math.min(cur.y, rects[j].y);
+              const nx2 = Math.max(cur.x+cur.w, rects[j].x+rects[j].w);
+              const ny2 = Math.max(cur.y+cur.h, rects[j].y+rects[j].h);
+              cur = {x:nx, y:ny, w:nx2-nx, h:ny2-ny};
+              used[j]=true;
+            }
+          }
+          merged.push(cur);
+        }
+        return merged;
+      }
+
+      function renderImage(item, width, height, radiusRect, gapVertical, radiusPercent, gap, color, mode) {
+        const c = document.createElement('canvas');
+        c.width = width;
+        c.height = height;
+        const cx = c.getContext('2d');
+        cx.clearRect(0, 0, width, height);
+
+        const gapOrig = gap;
+        const gapVerticalOrig = gapVertical;
+
+        for (const rect of item.detectedRects) {
+          const x = rect.x, y = rect.y, w = rect.w, h = rect.h;
+          let drawW = Math.max(w - gapOrig, 2);
+          let drawH = Math.max(h - gapOrig, 2);
+          let x0 = x + gapOrig/2;
+          let y0 = y + gapOrig/2;
+          const cx2 = x + w/2;
+          const cy2 = y + h/2;
+
+          cx.fillStyle = color;
+
+          if (mode === 'rect') {
+            const halfGapV = gapVerticalOrig / 2;
+            y0 = y0 + halfGapV;
+            drawH = Math.max(drawH - gapVerticalOrig, 2);
+            const radiusOrig = Math.min(radiusRect, drawW/2, drawH/2);
+            cx.beginPath();
+            roundedRectPath(cx, x0, y0, drawW, drawH, radiusOrig);
+            cx.fill();
+          } else {
+            const baseDiam = Math.min(drawW, drawH);
+            const r = (baseDiam / 2) * (radiusPercent / 100);
+            cx.beginPath();
+            cx.arc(cx2, cy2, r, 0, Math.PI*2);
+            cx.fill();
+          }
+        }
+        return c;
+      }
+
+      function roundedRectPath(ctx, x, y, w, h, r) {
+        const radius = Math.min(r, w/2, h/2);
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + w - radius, y);
+        ctx.arcTo(x + w, y, x + w, y + radius, radius);
+        ctx.lineTo(x + w, y + h - radius);
+        ctx.arcTo(x + w, y + h, x + w - radius, y + h, radius);
+        ctx.lineTo(x + radius, y + h);
+        ctx.arcTo(x, y + h, x, y + h - radius, radius);
+        ctx.lineTo(x, y + radius);
+        ctx.arcTo(x, y, x + radius, y, radius);
+        ctx.closePath();
+      }
+
+      function drawPreview() {
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+        
+        if (currentIndex < 0 || currentIndex >= imageItems.length) {
+          ctx.fillStyle = '#b0a8bf';
+          ctx.font = '18px system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('📂 导入图片 (可多选)', w/2, h/2);
+          rectCountSpan.textContent = '识别到 0 个图块';
+          imageIndexSpan.textContent = '图片 0 / 0';
+          return;
+        }
+
+        const item = imageItems[currentIndex];
+        const displayScale = Math.min((w) / item.originalWidth, (h) / item.originalHeight, 1);
+        const offsetX = (w - item.originalWidth * displayScale) / 2;
+        const offsetY = (h - item.originalHeight * displayScale) / 2;
+
+        ctx.globalAlpha = 0.2;
+        ctx.drawImage(item.sourceImage, offsetX, offsetY, item.originalWidth*displayScale, item.originalHeight*displayScale);
+        ctx.globalAlpha = 1;
+
+        const gap = currentGap * displayScale;
+        const gapVertical = currentGapVerticalRect * displayScale;
+
+        for (const rect of item.detectedRects) {
+          const sx = rect.x * displayScale + offsetX;
+          const sy = rect.y * displayScale + offsetY;
+          const sw = rect.w * displayScale;
+          const sh = rect.h * displayScale;
+
+          let drawW = Math.max(sw - gap, 2);
+          let drawH = Math.max(sh - gap, 2);
+          let x0 = sx + gap/2;
+          let y0 = sy + gap/2;
+
+          if (currentMode === 'rect') {
+            const halfGapV = gapVertical / 2;
+            y0 = y0 + halfGapV;
+            drawH = Math.max(drawH - gapVertical, 2);
+            const radiusCanvas = Math.min(currentRadiusRect * displayScale, drawW/2, drawH/2);
+            ctx.fillStyle = currentColor;
+            ctx.beginPath();
+            roundedRectPath(ctx, x0, y0, drawW, drawH, radiusCanvas);
+            ctx.fill();
+          } else {
+            const baseDiam = Math.min(drawW, drawH);
+            const radius = (baseDiam / 2) * (currentRadiusPercent / 100);
+            const cx = sx + sw/2;
+            const cy = sy + sh/2;
+            ctx.fillStyle = currentColor;
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, 0, Math.PI*2);
+            ctx.fill();
+          }
+        }
+
+        rectCountSpan.textContent = `识别到 ${item.detectedRects.length} 个图块`;
+        imageIndexSpan.textContent = `图片 ${currentIndex+1} / ${imageItems.length}`;
+      }
+
+      function loadImages(files) {
+        const fileArray = Array.from(files);
+        let loaded = 0;
+        fileArray.forEach(file => {
+          const img = new Image();
+          img.onload = () => {
+            const item = {
+              id: nextId++,
+              sourceImage: img,
+              originalWidth: img.naturalWidth || img.width,
+              originalHeight: img.naturalHeight || img.height,
+              fileName: file.name,
+              detectedRects: []
+            };
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = item.originalWidth;
+            tempCanvas.height = item.originalHeight;
+            const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+            tempCtx.drawImage(img, 0, 0);
+            item.detectedRects = detectRectangles(tempCanvas);
+            imageItems.push(item);
+            loaded++;
+            if (loaded === fileArray.length) {
+              if (currentIndex < 0 || currentIndex >= imageItems.length) {
+                currentIndex = 0;
+              }
+              updateThumbnails();
+              window.resizeCanvasToFit();
+            }
+          };
+          img.src = URL.createObjectURL(file);
+        });
+      }
+
+      uploadInput.addEventListener('change', (e) => {
+        if (e.target.files.length === 0) return;
+        loadImages(e.target.files);
+        uploadInput.value = '';
+      });
+
+      function updateThumbnails() {
+        thumbnailsContainer.innerHTML = '';
+        imageItems.forEach((item, idx) => {
+          const div = document.createElement('div');
+          div.className = 'thumb-item' + (idx === currentIndex ? ' active' : '');
+          const img = document.createElement('img');
+          img.src = item.sourceImage.src;
+          img.alt = item.fileName;
+          div.appendChild(img);
+          div.title = item.fileName;
+          div.addEventListener('click', () => {
+            currentIndex = idx;
+            updateThumbnails();
+            window.resizeCanvasToFit();
+          });
+          thumbnailsContainer.appendChild(div);
+        });
+      }
+
+      function bindSliderNumber(slider, number, callback) {
+        slider.addEventListener('input', () => {
+          number.value = slider.value;
+          callback(parseFloat(slider.value));
+        });
+        number.addEventListener('input', () => {
+          let val = parseFloat(number.value);
+          if (isNaN(val)) return;
+          const min = parseFloat(slider.min);
+          const max = parseFloat(slider.max);
+          val = Math.min(max, Math.max(min, val));
+          slider.value = val;
+          number.value = val;
+          callback(val);
+        });
+        number.addEventListener('blur', () => {
+          let val = parseFloat(number.value);
+          if (isNaN(val)) {
+            val = parseFloat(slider.min);
+            number.value = val;
+          }
+          const min = parseFloat(slider.min);
+          const max = parseFloat(slider.max);
+          val = Math.min(max, Math.max(min, val));
+          slider.value = val;
+          number.value = val;
+          callback(val);
+        });
+      }
+
+      bindSliderNumber(radiusSliderRect, radiusNumberRect, (val) => {
+        currentRadiusRect = val;
+        drawPreview();
+      });
+      bindSliderNumber(gapVerticalSliderRect, gapVerticalNumberRect, (val) => {
+        currentGapVerticalRect = val;
+        drawPreview();
+      });
+      bindSliderNumber(radiusSliderCircle, radiusNumberCircle, (val) => {
+        currentRadiusPercent = val;
+        drawPreview();
+      });
+      bindSliderNumber(gapSlider, gapNumber, (val) => {
+        currentGap = val;
+        drawPreview();
+      });
+      colorPicker.addEventListener('input', (e) => {
+        currentColor = e.target.value;
+        drawPreview();
+      });
+
+      exportAllBtn.addEventListener('click', async () => {
+        if (imageItems.length === 0) {
+          alert('请先导入图片');
+          return;
+        }
+
+        if (imageItems.length === 1) {
+          const item = imageItems[0];
+          const exportCanvas = renderImage(
+            item,
+            item.originalWidth,
+            item.originalHeight,
+            currentRadiusRect,
+            currentGapVerticalRect,
+            currentRadiusPercent,
+            currentGap,
+            currentColor,
+            currentMode
+          );
+          const link = document.createElement('a');
+          const baseName = item.fileName.replace(/\.[^.]+$/, '') + '_template.png';
+          link.download = baseName;
+          link.href = exportCanvas.toDataURL('image/png');
+          link.click();
+          return;
+        }
+
+        try {
+          const JSZip = window.JSZip;
+          const zip = new JSZip();
+          const folder = zip.folder('templates');
+
+          for (const item of imageItems) {
+            const exportCanvas = renderImage(
+              item,
+              item.originalWidth,
+              item.originalHeight,
+              currentRadiusRect,
+              currentGapVerticalRect,
+              currentRadiusPercent,
+              currentGap,
+              currentColor,
+              currentMode
+            );
+            const dataUrl = exportCanvas.toDataURL('image/png');
+            const blob = await fetch(dataUrl).then(res => res.blob());
+            const baseName = item.fileName.replace(/\.[^.]+$/, '') + '_template.png';
+            folder.file(baseName, blob);
+          }
+
+          const zipBlob = await zip.generateAsync({ type: 'blob' });
+          saveAs(zipBlob, 'templates_export.zip');
+        } catch (err) {
+          alert('导出失败: ' + err.message);
+          console.error(err);
+        }
+      });
+
+      window.addEventListener('resize', window.resizeCanvasToFit);
+
+      setMode('rect');
+      setTimeout(window.resizeCanvasToFit, 50);
+    })();
+
+  })();
 </script>
 </body>
 </html>
