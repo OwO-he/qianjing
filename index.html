@@ -10,48 +10,22 @@
     
     /* 顶部切换按钮 */
     .tab-bar {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-      max-width: 700px;
-      background: #fff;
-      border-radius: 16px;
-      padding: 6px;
+      display: flex; gap: 8px; width: 100%; max-width: 700px;
+      background: #fff; border-radius: 16px; padding: 6px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
     .tab-btn {
-      flex: 1;
-      padding: 10px 0;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      background: transparent;
-      color: #64748b;
-      cursor: pointer;
-      transition: all 0.2s;
+      flex: 1; padding: 10px 0; border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 600; background: transparent; color: #64748b;
+      cursor: pointer; transition: all 0.2s;
     }
-    .tab-btn.active {
-      background: #2563eb;
-      color: #fff;
-      box-shadow: 0 4px 8px rgba(37,99,235,0.2);
-    }
+    .tab-btn.active { background: #2563eb; color: #fff; box-shadow: 0 4px 8px rgba(37,99,235,0.2); }
     .tab-btn:active { transform: scale(0.97); }
 
-    /* 页面容器 */
-    .page {
-      display: none;
-      width: 100%;
-      max-width: 700px;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-    }
-    .page.active {
-      display: flex;
-    }
+    .page { display: none; width: 100%; max-width: 700px; flex-direction: column; align-items: center; gap: 12px; }
+    .page.active { display: flex; }
 
-    /* 前景工具样式 (原) */
+    /* 前景工具样式 */
     .panel{background:#fff;padding:14px 12px;border-radius:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;width:100%;max-width:700px;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
     .control{display:flex;flex-direction:column;gap:4px;}
     label{font-size:13px;font-weight:500;color:#1e293b;}
@@ -63,369 +37,77 @@
     .title h2{font-size:18px;font-weight:600;color:#0f172a;letter-spacing:-0.3px;}
     .title h2 span{color:#2563eb;}
 
-    .preview-wrapper{
-      width:100%;
-      max-width:700px;
-      background:#fff;
-      border-radius:16px;
-      box-shadow:0 8px 24px rgba(0,0,0,0.08);
-      padding:8px;
-      border:2px solid #2563eb;
-      box-sizing:border-box;
-    }
-    .preview-box{
-      position:relative;
-      width:100%;
-      aspect-ratio: 1080 / 641;
-      background:#ffffff;
-      border-radius:10px;
-      overflow:hidden;
-    }
-    #canvas{
-      position:absolute;
-      width:100%;
-      height:100%;
-      background:transparent;
-      z-index:2;
-      touch-action: none;
-    }
-    .hint-mobile{
-      font-size:11px;
-      color:#94a3b8;
-      text-align:center;
-      padding:6px 0 2px;
-    }
-    @media (max-width:480px){
-      .panel{grid-template-columns:1fr 1fr;gap:8px;}
-      .control{min-width:0;}
-      .title h2{font-size:16px;}
-    }
-    input[type="range"]{ accent-color: #2563eb; }
-    .weight-badge{
-      display:inline-block;
-      background:#eef2ff;
-      color:#2563eb;
-      padding:0 8px;
-      border-radius:4px;
-      font-size:12px;
-      font-weight:600;
-    }
-    .weight-input-row{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    .weight-input-row input[type="number"]{
-      width:70px;
-      flex-shrink:0;
-      padding:6px 4px;
-      text-align:center;
-      font-weight:600;
-    }
-    .weight-input-row input[type="range"]{
-      flex:1;
+    .side-panel { display: flex; gap: 15px; align-items: flex-start; width: 100%; max-width: 700px; }
+    .right-panel {
+      width: 340px; background: white; padding: 15px; border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-height: calc(100vh - 40px);
+      overflow-y: auto; flex-shrink: 0;
     }
 
-    /* 模板工具样式 (原) */
+    .panel-section { margin-bottom: 20px; background: #f9f9f9; padding: 10px; border-radius: 6px; border: 1px solid #eee; }
+    .panel-section h3 { margin: 0 0 10px 0; font-size: 15px; color: #007bff; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
+    .control-group { margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+    .control-group:last-child { margin-bottom: 0; }
+    .control-label { font-size: 13px; width: 70px; font-weight: bold; color: #555; white-space: nowrap; }
+    .control-inputs { display: flex; align-items: center; gap: 8px; flex: 1; }
+    input[type="range"] { flex: 1; height: 20px; accent-color: #2563eb; }
+    input[type="number"] { width: 45px; padding: 4px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-size: 16px; }
+
+    .preview-wrapper{ width:100%; max-width:700px; background:#fff; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.08); padding:8px; border:2px solid #2563eb; box-sizing:border-box; }
+    .preview-box{ position:relative; width:100%; aspect-ratio: 1080 / 641; background:#ffffff; border-radius:10px; overflow:hidden; }
+    #canvas{ position:absolute; width:100%; height:100%; background:transparent; z-index:2; touch-action: none; }
+    .hint-mobile{ font-size:11px; color:#94a3b8; text-align:center; padding:6px 0 2px; }
+
+    .weight-input-row{ display:flex; gap:8px; align-items:center; }
+    .weight-input-row input[type="number"]{ width:70px; flex-shrink:0; padding:6px 4px; text-align:center; font-weight:600; }
+    .weight-input-row input[type="range"]{ flex:1; }
+
+    /* 模板工具样式 */
     .template-app {
-      background: #ffffff;
-      border-radius: 32px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
-      padding: 28px 30px 20px;
-      width: 100%;
-      max-width: 700px;
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-      border: 1px solid #e4dee8;
+      background: #ffffff; border-radius: 32px; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+      padding: 28px 30px 20px; width: 100%; max-width: 700px; display: flex;
+      flex-direction: column; gap: 22px; border: 1px solid #e4dee8;
     }
-    .template-app .header-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .template-app h1 {
-      color: #1f1a2b;
-      font-weight: 550;
-      font-size: 1.6rem;
-      letter-spacing: 0.5px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .template-app .mode-tabs {
-      display: flex;
-      gap: 6px;
-      background: #edebf2;
-      padding: 4px;
-      border-radius: 48px;
-    }
-    .template-app .mode-tab {
-      background: transparent;
-      border: none;
-      padding: 8px 20px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: #3b334b;
-      cursor: pointer;
-      transition: 0.2s;
-      box-shadow: none;
-      border: 1px solid transparent;
-    }
-    .template-app .mode-tab.active {
-      background: white;
-      color: #1f1a2b;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-      border-color: #d6cedf;
-    }
-    .template-app .mode-tab:hover {
-      background: #dfdae8;
-    }
-    .template-app .mode-tab.active:hover {
-      background: white;
-    }
-    .template-app .control-panel {
-      background: #f6f4fa;
-      border-radius: 24px;
-      padding: 16px 20px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 14px 18px;
-      border: 1px solid #e1dae8;
-    }
-    .template-app .file-uploader {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: white;
-      padding: 6px 16px;
-      border-radius: 40px;
-      cursor: pointer;
-      transition: 0.15s;
-      border: 1px solid #d6cedf;
-    }
-    .template-app .file-uploader:hover {
-      background: #f0edf5;
-    }
-    .template-app .file-uploader label {
-      color: #2c253a;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.9rem;
-    }
-    .template-app .file-uploader input {
-      display: none;
-    }
-    .template-app .slider-group {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: white;
-      padding: 4px 14px 4px 16px;
-      border-radius: 40px;
-      border: 1px solid #d6cedf;
-    }
-    .template-app .slider-group span {
-      color: #2c253a;
-      font-size: 0.85rem;
-      min-width: 36px;
-      white-space: nowrap;
-    }
-    .template-app .slider-group input[type="range"] {
-      width: 100px;
-      cursor: pointer;
-      background: transparent;
-      accent-color: #6a5e82;
-    }
-    .template-app .slider-group input[type="number"] {
-      width: 48px;
-      padding: 4px 2px 4px 6px;
-      border-radius: 20px;
-      border: 1px solid #d6cedf;
-      background: white;
-      font-size: 0.85rem;
-      text-align: center;
-      font-weight: 500;
-      color: #1f1a2b;
-      outline: none;
-      transition: 0.15s;
-    }
-    .template-app .slider-group input[type="number"]:focus {
-      border-color: #8f7ea8;
-      box-shadow: 0 0 0 2px rgba(106, 94, 130, 0.2);
-    }
-    .template-app .color-input {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: white;
-      padding: 4px 14px 4px 16px;
-      border-radius: 40px;
-      border: 1px solid #d6cedf;
-    }
-    .template-app .color-input span {
-      color: #2c253a;
-      font-size: 0.9rem;
-    }
-    .template-app .color-input input[type="color"] {
-      width: 36px;
-      height: 28px;
-      border: none;
-      border-radius: 8px;
-      background: transparent;
-      cursor: pointer;
-      padding: 0;
-    }
-    .template-app .action-btn {
-      background: #e4ddf0;
-      border: none;
-      color: #201b2b;
-      font-weight: 600;
-      padding: 8px 22px;
-      border-radius: 40px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.15s;
-      letter-spacing: 0.3px;
-      border: 1px solid #cdc3db;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-      flex-shrink: 0;
-    }
-    .template-app .action-btn:hover {
-      background: #d5cbe6;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.05);
-    }
-    .template-app .action-btn:active {
-      transform: translateY(1px);
-      box-shadow: none;
-    }
-    .template-app .action-btn.primary {
-      background: #6a5e82;
-      border-color: #5a4e6b;
-      color: white;
-    }
-    .template-app .action-btn.primary:hover {
-      background: #7b6e96;
-    }
-    .template-app .canvas-wrapper {
-      background: #f0ecf5;
-      border-radius: 24px;
-      padding: 4px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border: 1px solid #e0dae6;
-      position: relative;
-      min-height: auto;
-    }
-    .template-app canvas {
-      max-width: 100%;
-      max-height: 500px;
-      display: block;
-      border-radius: 16px;
-      background: #ffffff;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
-      border: 1px solid #dbd4e2;
-      width: auto;
-      height: auto;
-    }
-    .template-app .info-bar {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      color: #4b435e;
-      font-size: 0.9rem;
-      padding: 0 6px;
-      gap: 8px;
-    }
-    .template-app .badge {
-      background: #eae5f2;
-      padding: 4px 16px;
-      border-radius: 30px;
-      color: #2f273f;
-      border: 1px solid #d5cddf;
-      font-size: 0.85rem;
-    }
-    .template-app .thumbnails {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      padding: 8px 0;
-    }
-    .template-app .thumb-item {
-      width: 56px;
-      height: 56px;
-      border-radius: 12px;
-      border: 2px solid transparent;
-      cursor: pointer;
-      overflow: hidden;
-      transition: 0.15s;
-      background: #eae5f2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      color: #7b718d;
-      flex-shrink: 0;
-    }
-    .template-app .thumb-item.active {
-      border-color: #6a5e82;
-      box-shadow: 0 0 0 2px rgba(106, 94, 130, 0.3);
-    }
-    .template-app .thumb-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .template-app footer {
-      color: #7b718d;
-      text-align: center;
-      font-size: 0.8rem;
-      margin-top: 6px;
-      border-top: 1px solid #e2dce8;
-      padding-top: 12px;
-    }
-    .template-app .slider-group input[type="number"]::-webkit-outer-spin-button,
-    .template-app .slider-group input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    .template-app .slider-group input[type="number"] {
-      -moz-appearance: textfield;
-    }
-    .template-app .hidden {
-      display: none !important;
-    }
-    .template-app .control-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-left: auto;
-      flex-wrap: wrap;
-    }
+    .template-app .header-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px; }
+    .template-app h1 { color: #1f1a2b; font-weight: 550; font-size: 1.6rem; letter-spacing: 0.5px; display: flex; align-items: center; gap: 12px; }
+    .template-app .mode-tabs { display: flex; gap: 6px; background: #edebf2; padding: 4px; border-radius: 48px; }
+    .template-app .mode-tab { background: transparent; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; color: #3b334b; cursor: pointer; transition: 0.2s; box-shadow: none; border: 1px solid transparent; }
+    .template-app .mode-tab.active { background: white; color: #1f1a2b; box-shadow: 0 4px 10px rgba(0,0,0,0.04); border-color: #d6cedf; }
+    .template-app .control-panel { background: #f6f4fa; border-radius: 24px; padding: 16px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; border: 1px solid #e1dae8; }
+    .template-app .file-uploader { display: flex; align-items: center; gap: 8px; background: white; padding: 6px 16px; border-radius: 40px; cursor: pointer; transition: 0.15s; border: 1px solid #d6cedf; }
+    .template-app .file-uploader label { color: #2c253a; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; }
+    .template-app .file-uploader input { display: none; }
+    .template-app .slider-group { display: flex; align-items: center; gap: 6px; background: white; padding: 4px 14px 4px 16px; border-radius: 40px; border: 1px solid #d6cedf; }
+    .template-app .slider-group span { color: #2c253a; font-size: 0.85rem; min-width: 36px; white-space: nowrap; }
+    .template-app .slider-group input[type="range"] { width: 100px; cursor: pointer; background: transparent; accent-color: #6a5e82; }
+    .template-app .slider-group input[type="number"] { width: 48px; padding: 4px 2px 4px 6px; border-radius: 20px; border: 1px solid #d6cedf; background: white; font-size: 0.85rem; text-align: center; font-weight: 500; color: #1f1a2b; outline: none; transition: 0.15s; }
+    .template-app .color-input { display: flex; align-items: center; gap: 6px; background: white; padding: 4px 14px 4px 16px; border-radius: 40px; border: 1px solid #d6cedf; }
+    .template-app .color-input span { color: #2c253a; font-size: 0.9rem; }
+    .template-app .color-input input[type="color"] { width: 36px; height: 28px; border: none; border-radius: 8px; background: transparent; cursor: pointer; padding: 0; }
+    .template-app .action-btn { background: #e4ddf0; border: none; color: #201b2b; font-weight: 600; padding: 8px 22px; border-radius: 40px; font-size: 0.9rem; cursor: pointer; transition: all 0.15s; letter-spacing: 0.3px; border: 1px solid #cdc3db; box-shadow: 0 2px 6px rgba(0,0,0,0.02); flex-shrink: 0; }
+    .template-app .action-btn.primary { background: #6a5e82; border-color: #5a4e6b; color: white; }
+    .template-app .canvas-wrapper { background: #f0ecf5; border-radius: 24px; padding: 4px; display: flex; justify-content: center; align-items: center; border: 1px solid #e0dae6; position: relative; min-height: auto; }
+    .template-app canvas { max-width: 100%; max-height: 500px; display: block; border-radius: 16px; background: #ffffff; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03); border: 1px solid #dbd4e2; width: auto; height: auto; }
+    .template-app .info-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; color: #4b435e; font-size: 0.9rem; padding: 0 6px; gap: 8px; }
+    .template-app .badge { background: #eae5f2; padding: 4px 16px; border-radius: 30px; color: #2f273f; border: 1px solid #d5cddf; font-size: 0.85rem; }
+    .template-app .thumbnails { display: flex; gap: 8px; flex-wrap: wrap; padding: 8px 0; }
+    .template-app .thumb-item { width: 56px; height: 56px; border-radius: 12px; border: 2px solid transparent; cursor: pointer; overflow: hidden; transition: 0.15s; background: #eae5f2; display: flex; align-items: center; justify-content: center; }
+    .template-app .thumb-item.active { border-color: #6a5e82; box-shadow: 0 0 0 2px rgba(106, 94, 130, 0.3); }
+    .template-app .thumb-item img { width: 100%; height: 100%; object-fit: cover; }
+    .template-app footer { color: #7b718d; text-align: center; font-size: 0.8rem; margin-top: 6px; border-top: 1px solid #e2dce8; padding-top: 12px; }
+    .template-app .control-right { display: flex; align-items: center; gap: 14px; margin-left: auto; flex-wrap: wrap; }
 
-    /* 响应式调整 */
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
+      .side-panel { flex-direction: column; }
+      .right-panel { width: 100%; max-height: none; }
+      .panel{grid-template-columns:1fr 1fr;gap:8px;}
       .template-app .control-panel { flex-direction: column; align-items: stretch; }
       .template-app .control-right { margin-left: 0; justify-content: center; }
-      .template-app .slider-group input[type="range"] { width: 80px; }
-      .template-app .header-row { flex-direction: column; align-items: stretch; }
-      .template-app .mode-tabs { align-self: flex-start; }
     }
   </style>
 </head>
 <body>
 
-<!-- 切换按钮 -->
 <div class="tab-bar">
   <button class="tab-btn active" data-page="page1">⌨️ 前景工具</button>
   <button class="tab-btn" data-page="page2">🧩 模板生成器</button>
@@ -434,13 +116,15 @@
 <!-- ======== 页面1: 前景工具 ======== -->
 <div id="page1" class="page active">
   <div class="panel">
-    <div class="title"><h2>⌨️ <span>昀の前景</span>ovo</h2></div>
+    <div class="title"><h2>⌨️ <span>昀の前景</span> · 多布局 1:1 精准工具</h2></div>
     <div class="control">
       <label>选择布局</label>
       <select id="layout">
-        <option value="9">9键键盘</option>
-        <option value="9v2">9键2</option>
-        <option value="26" selected>26键键盘</option>
+        <option value="9v2_custom">⭐ 9键角标 (精调版)</option>
+        <option value="26v2_custom" selected>⭐ 26键角标 (精调版)</option>
+        <option value="9">9键键盘 (旧)</option>
+        <option value="9v2">9键2 (旧)</option>
+        <option value="26">26键键盘 (旧)</option>
         <option value="num">数字键盘</option>
         <option value="num2">123键2（图一）</option>
         <option value="stroke">笔画键盘（图二）</option>
@@ -468,25 +152,61 @@
     <div class="control">
       <label>粗细</label>
       <div class="weight-input-row">
-        <input type="range" id="weight" min="10" max="1200" step="5" value="400">
-        <input type="number" id="weightNumber" min="10" max="1200" value="400">
+        <input type="range" id="weight" min="10" max="1200" step="5" value="100">
+        <input type="number" id="weightNumber" min="10" max="1200" value="100">
       </div>
     </div>
     <div class="control">
-      <label>大小 <span class="weight-badge" id="sizeValue">48</span></label>
-      <input type="range" id="fontSize" min="16" max="100" step="1" value="48">
+      <label>整体大小 <span class="weight-badge" id="sizeValue">50</span></label>
+      <input type="range" id="fontSize" min="16" max="100" step="1" value="50">
     </div>
     <div class="control" style="grid-column:1/-1;">
       <button id="export">✅ 导出 1080×641 透明PNG</button>
-      <div class="hint">字母1:1对应底图位置，无乱码</div>
+      <div class="hint">单击画布改字 · 长按/右键恢复默认</div>
     </div>
   </div>
 
-  <div class="preview-wrapper">
-    <div class="preview-box">
-      <canvas id="canvas"></canvas>
+  <div class="side-panel">
+    <div class="preview-wrapper" style="flex:1;">
+      <div class="preview-box">
+        <canvas id="canvas"></canvas>
+      </div>
+      <div class="hint-mobile">← 单击改字 · 点击导出高清PNG →</div>
     </div>
-    <div class="hint-mobile">← 拖动字母微调位置 · 点击导出高清PNG →</div>
+
+    <div class="right-panel" id="groupControlPanel">
+      <div class="panel-section">
+        <h3>分组字号调节 (仅精调版生效)</h3>
+        <div class="control-group">
+          <div class="control-label">数字组</div>
+          <div class="control-inputs">
+            <input type="range" class="group-range" data-group="num" min="8" max="60" value="14">
+            <input type="number" class="group-num" data-group="num" min="8" max="100" value="14">
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="control-label">字母组</div>
+          <div class="control-inputs">
+            <input type="range" class="group-range" data-group="letter" min="8" max="60" value="28">
+            <input type="number" class="group-num" data-group="letter" min="8" max="100" value="28">
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="control-label">符号组</div>
+          <div class="control-inputs">
+            <input type="range" class="group-range" data-group="symbol" min="8" max="60" value="20">
+            <input type="number" class="group-num" data-group="symbol" min="8" max="100" value="20">
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="control-label">功能组</div>
+          <div class="control-inputs">
+            <input type="range" class="group-range" data-group="action" min="8" max="60" value="26">
+            <input type="number" class="group-num" data-group="action" min="8" max="100" value="26">
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -518,6 +238,12 @@
         <span>上下间距</span>
         <input type="range" id="gapVerticalSliderRect" min="-50" max="50" value="0" step="1">
         <input type="number" id="gapVerticalNumberRect" min="-50" max="50" value="0" step="1">
+      </div>
+
+      <div class="slider-group" id="gapHorizontalGroupRect">
+        <span>左右间距</span>
+        <input type="range" id="gapHorizontalSliderRect" min="-50" max="50" value="0" step="1">
+        <input type="number" id="gapHorizontalNumberRect" min="-50" max="50" value="0" step="1">
       </div>
 
       <div class="slider-group" id="radiusGroupCircle" style="display: none;">
@@ -562,115 +288,190 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script>
   (function(){
-    // ===== 页面切换 =====
+    // 页面切换
     const tabBtns = document.querySelectorAll('.tab-btn');
-    const pages = {
-      page1: document.getElementById('page1'),
-      page2: document.getElementById('page2')
-    };
-
+    const pages = { page1: document.getElementById('page1'), page2: document.getElementById('page2') };
     tabBtns.forEach(btn => {
       btn.addEventListener('click', function() {
         tabBtns.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
         const target = this.dataset.page;
-        Object.keys(pages).forEach(key => {
-          pages[key].classList.toggle('active', key === target);
-        });
-        // 切换后刷新canvas尺寸
+        Object.keys(pages).forEach(key => { pages[key].classList.toggle('active', key === target); });
         setTimeout(() => {
-          if (target === 'page1') {
-            // 前景工具重绘
-            const evt = new Event('resize');
-            window.dispatchEvent(evt);
-          } else if (target === 'page2') {
-            // 模板工具调整大小
-            if (window.resizeCanvasToFit) window.resizeCanvasToFit();
-          }
+          if (target === 'page1') window.dispatchEvent(new Event('resize'));
+          else if (target === 'page2' && window.resizeCanvasToFit) window.resizeCanvasToFit();
         }, 50);
       });
     });
 
     // =============================================
-    // 前景工具代码 (原样)
+    // 前景工具逻辑
     // =============================================
     (function foregroundInit() {
       const W = 1080, H = 641;
       const canvas = document.getElementById('canvas');
       const ctx = canvas.getContext('2d');
 
+      const keys9v2_custom = [
+        { t: "1", x: 242, y: 76, group: "num" }, { t: "Start", x: 312, y: 102, group: "letter" },
+        { t: "2", x: 470, y: 76, group: "num" }, { t: "ABC", x: 540, y: 102, group: "letter" },
+        { t: "3", x: 708, y: 76, group: "num" }, { t: "DEF", x: 778, y: 102, group: "letter" },
+        { t: "Del", x: 994, y: 86, group: "action" },
+        { t: "4", x: 242, y: 225, group: "num" }, { t: "GHI", x: 312, y: 250, group: "letter" },
+        { t: "5", x: 470, y: 225, group: "num" }, { t: "JKL", x: 540, y: 250, group: "letter" },
+        { t: "6", x: 708, y: 225, group: "num" }, { t: "MNO", x: 778, y: 250, group: "letter" },
+        { t: "Clear", x: 994, y: 250, group: "action" },
+        { t: "7", x: 242, y: 370, group: "num" }, { t: "PQRS", x: 312, y: 398, group: "letter" },
+        { t: "8", x: 470, y: 370, group: "num" }, { t: "TUV", x: 540, y: 398, group: "letter" },
+        { t: "9", x: 708, y: 370, group: "num" }, { t: "WXYZ", x: 778, y: 398, group: "letter" },
+        { t: "Sym", x: 75, y: 565, group: "symbol" }, { t: "123", x: 245, y: 565, group: "symbol" },
+        { t: "wait...", x: 540, y: 565, group: "symbol" }, { t: "E/n", x: 822, y: 565, group: "symbol" },
+        { t: "Enter", x: 985, y: 500, group: "action" }
+      ];
+
+      const keys26v2_custom = [
+        { t: "1", x: 30, y: 54, group: "num" }, { t: "Q", x: 45, y: 97, group: "letter" },
+        { t: "2", x: 135, y: 54, group: "num" }, { t: "W", x: 150, y: 97, group: "letter" },
+        { t: "3", x: 240, y: 54, group: "num" }, { t: "E", x: 255, y: 97, group: "letter" },
+        { t: "4", x: 360, y: 54, group: "num" }, { t: "R", x: 375, y: 97, group: "letter" },
+        { t: "5", x: 465, y: 54, group: "num" }, { t: "T", x: 480, y: 97, group: "letter" },
+        { t: "6", x: 570, y: 54, group: "num" }, { t: "Y", x: 585, y: 97, group: "letter" },
+        { t: "7", x: 675, y: 54, group: "num" }, { t: "U", x: 690, y: 97, group: "letter" },
+        { t: "8", x: 780, y: 54, group: "num" }, { t: "I", x: 795, y: 97, group: "letter" },
+        { t: "9", x: 885, y: 54, group: "num" }, { t: "O", x: 900, y: 97, group: "letter" },
+        { t: "0", x: 990, y: 54, group: "num" }, { t: "P", x: 1005, y: 97, group: "letter" },
+        
+        { t: "-", x: 85, y: 208, group: "symbol" }, { t: "@", x: 195, y: 208, group: "symbol" },
+        { t: "#", x: 305, y: 208, group: "symbol" }, { t: "$", x: 415, y: 208, group: "symbol" },
+        { t: "%", x: 525, y: 208, group: "symbol" }, { t: "&", x: 625, y: 208, group: "symbol" },
+        { t: "*", x: 735, y: 208, group: "symbol" }, { t: "(", x: 840, y: 208, group: "symbol" },
+        { t: ")", x: 946, y: 208, group: "symbol" },
+
+        { t: "A", x: 105, y: 250, group: "letter" }, { t: "S", x: 215, y: 250, group: "letter" },
+        { t: "D", x: 320, y: 250, group: "letter" }, { t: "F", x: 430, y: 250, group: "letter" },
+        { t: "G", x: 540, y: 250, group: "letter" }, { t: "H", x: 645, y: 250, group: "letter" },
+        { t: "J", x: 755, y: 250, group: "letter" }, { t: "K", x: 865, y: 250, group: "letter" },
+        { t: "L", x: 975, y: 250, group: "letter" },
+
+        { t: "'", x: 189, y: 365, group: "symbol" }, { t: "/", x: 300, y: 365, group: "symbol" },
+        { t: "-", x: 400, y: 365, group: "symbol" }, { t: "_", x: 500, y: 365, group: "symbol" },
+        { t: ":", x: 620, y: 365, group: "symbol" }, { t: ";", x: 740, y: 365, group: "symbol" },
+        { t: "'", x: 840, y: 365, group: "symbol" },
+
+        { t: "大写", x: 85, y: 410, group: "action" }, { t: "Z", x: 215, y: 410, group: "letter" },
+        { t: "X", x: 320, y: 410, group: "letter" }, { t: "C", x: 430, y: 410, group: "letter" },
+        { t: "V", x: 540, y: 410, group: "letter" }, { t: "B", x: 645, y: 410, group: "letter" },
+        { t: "N", x: 755, y: 410, group: "letter" }, { t: "M", x: 865, y: 410, group: "letter" },
+        { t: "Del", x: 985, y: 410, group: "action" },
+
+        { t: "Sym", x: 75, y: 560, group: "action" }, { t: "123", x: 220, y: 560, group: "action" },
+        { t: ",", x: 330, y: 560, group: "symbol" }, { t: "wait...", x: 540, y: 560, group: "symbol" },
+        { t: "。", x: 755, y: 560, group: "symbol" }, { t: "E/n", x: 865, y: 560, group: "action" },
+        { t: "Enter", x: 1005, y: 560, group: "action" }
+      ];
+
       const keys9 = [
-        {t:'ABC', x:540, y:96},{t:'DEF', x:810, y:96},
-        {t:'GHI', x:270, y:256},{t:'JKL', x:540, y:256},{t:'MNO', x:810, y:256},
-        {t:'PQRS', x:270, y:416},{t:'TUV', x:540, y:416},{t:'WXYZ', x:810, y:416}
+        {t:'ABC', x:540, y:96, group:'letter'},{t:'DEF', x:810, y:96, group:'letter'},
+        {t:'GHI', x:270, y:256, group:'letter'},{t:'JKL', x:540, y:256, group:'letter'},{t:'MNO', x:810, y:256, group:'letter'},
+        {t:'PQRS', x:270, y:416, group:'letter'},{t:'TUV', x:540, y:416, group:'letter'},{t:'WXYZ', x:810, y:416, group:'letter'}
       ];
       const keys9v2 = [
-        {t:'分词', x:270, y:96},{t:'ABC', x:540, y:96},{t:'DEF', x:810, y:96},{t:'删除', x:1000, y:96},
-        {t:'GHI', x:270, y:256},{t:'JKL', x:540, y:256},{t:'MNO', x:810, y:256},{t:'清空', x:1000, y:256},
-        {t:'PQRS', x:270, y:416},{t:'TUV', x:540, y:416},{t:'WXYZ', x:810, y:416},{t:'发送', x:1000, y:480},
-        {t:'符', x:80, y:570},{t:'123', x:270, y:570},{t:'空格', x:540, y:570},{t:'c/n', x:810, y:570}
+        {t:'分词', x:270, y:96, group:'action'},{t:'ABC', x:540, y:96, group:'letter'},{t:'DEF', x:810, y:96, group:'letter'},{t:'删除', x:1000, y:96, group:'action'},
+        {t:'GHI', x:270, y:256, group:'letter'},{t:'JKL', x:540, y:256, group:'letter'},{t:'MNO', x:810, y:256, group:'letter'},{t:'清空', x:1000, y:256, group:'action'},
+        {t:'PQRS', x:270, y:416, group:'letter'},{t:'TUV', x:540, y:416, group:'letter'},{t:'WXYZ', x:810, y:416, group:'letter'},{t:'发送', x:1000, y:480, group:'action'},
+        {t:'符', x:80, y:570, group:'symbol'},{t:'123', x:270, y:570, group:'num'},{t:'空格', x:540, y:570, group:'action'},{t:'c/n', x:810, y:570, group:'action'}
       ];
       const keys26 = [
-        {t:'Q', x:50, y:90},{t:'W', x:160, y:90},{t:'E', x:270, y:90},{t:'R', x:380, y:90},{t:'T', x:490, y:90},
-        {t:'Y', x:600, y:90},{t:'U', x:710, y:90},{t:'I', x:820, y:90},{t:'O', x:930, y:90},{t:'P', x:1040, y:90},
-        {t:'A', x:110, y:250},{t:'S', x:220, y:250},{t:'D', x:330, y:250},{t:'F', x:440, y:250},{t:'G', x:550, y:250},
-        {t:'H', x:660, y:250},{t:'J', x:770, y:250},{t:'K', x:880, y:250},{t:'L', x:990, y:250},
-        {t:'大写', x:70, y:410},{t:'Z', x:220, y:410},{t:'X', x:330, y:410},{t:'C', x:440, y:410},{t:'V', x:550, y:410},
-        {t:'B', x:660, y:410},{t:'N', x:770, y:410},{t:'M', x:880, y:410},{t:'删除', x:1000, y:410},
-        {t:'符', x:80, y:570},{t:'123', x:200, y:570},{t:',', x:320, y:570},{t:'空格', x:540, y:570},
-        {t:'。', x:760, y:570},{t:'c/n', x:880, y:570},{t:'发送', x:1000, y:570}
+        {t:'Q', x:50, y:90, group:'letter'},{t:'W', x:160, y:90, group:'letter'},{t:'E', x:270, y:90, group:'letter'},{t:'R', x:380, y:90, group:'letter'},{t:'T', x:490, y:90, group:'letter'},
+        {t:'Y', x:600, y:90, group:'letter'},{t:'U', x:710, y:90, group:'letter'},{t:'I', x:820, y:90, group:'letter'},{t:'O', x:930, y:90, group:'letter'},{t:'P', x:1040, y:90, group:'letter'},
+        {t:'A', x:110, y:250, group:'letter'},{t:'S', x:220, y:250, group:'letter'},{t:'D', x:330, y:250, group:'letter'},{t:'F', x:440, y:250, group:'letter'},{t:'G', x:550, y:250, group:'letter'},
+        {t:'H', x:660, y:250, group:'letter'},{t:'J', x:770, y:250, group:'letter'},{t:'K', x:880, y:250, group:'letter'},{t:'L', x:990, y:250, group:'letter'},
+        {t:'大写', x:70, y:410, group:'action'},{t:'Z', x:220, y:410, group:'letter'},{t:'X', x:330, y:410, group:'letter'},{t:'C', x:440, y:410, group:'letter'},{t:'V', x:550, y:410, group:'letter'},
+        {t:'B', x:660, y:410, group:'letter'},{t:'N', x:770, y:410, group:'letter'},{t:'M', x:880, y:410, group:'letter'},{t:'删除', x:1000, y:410, group:'action'},
+        {t:'符', x:80, y:570, group:'symbol'},{t:'123', x:200, y:570, group:'num'},{t:',', x:320, y:570, group:'symbol'},{t:'空格', x:540, y:570, group:'action'},
+        {t:'。', x:760, y:570, group:'symbol'},{t:'c/n', x:880, y:570, group:'action'},{t:'发送', x:1000, y:570, group:'action'}
       ];
       const keysNum = [
-        {t:'1',x:335,y:155},{t:'2',x:540,y:155},{t:'3',x:745,y:155},{t:'Back',x:950,y:155},
-        {t:'4',x:335,y:315},{t:'5',x:540,y:315},{t:'6',x:745,y:315},{t:'@',x:950,y:315},
-        {t:'7',x:335,y:475},{t:'8',x:540,y:475},{t:'9',x:745,y:475},{t:'.',x:950,y:475},
-        {t:'Fn',x:180,y:590},{t:'Ctrl',x:360,y:590},{t:'0',x:540,y:590},{t:'qq.com',x:745,y:590},{t:'Enter',x:950,y:590}
+        {t:'1',x:335,y:155, group:'num'},{t:'2',x:540,y:155, group:'num'},{t:'3',x:745,y:155, group:'num'},{t:'Back',x:950,y:155, group:'action'},
+        {t:'4',x:335,y:315, group:'num'},{t:'5',x:540,y:315, group:'num'},{t:'6',x:745,y:315, group:'num'},{t:'@',x:950,y:315, group:'symbol'},
+        {t:'7',x:335,y:475, group:'num'},{t:'8',x:540,y:475, group:'num'},{t:'9',x:745,y:475, group:'num'},{t:'.',x:950,y:475, group:'symbol'},
+        {t:'Fn',x:180,y:590, group:'action'},{t:'Ctrl',x:360,y:590, group:'action'},{t:'0',x:540,y:590, group:'num'},{t:'qq.com',x:745,y:590, group:'symbol'},{t:'Enter',x:950,y:590, group:'action'}
       ];
       const keysNum2 = [
-        {t:'1', x:270, y:130},{t:'2', x:540, y:130},{t:'3', x:810, y:130},{t:'删除', x:1000, y:130},
-        {t:'4', x:270, y:290},{t:'5', x:540, y:290},{t:'6', x:810, y:290},{t:'@', x:1000, y:290},
-        {t:'7', x:270, y:450},{t:'8', x:540, y:450},{t:'9', x:810, y:450},{t:'.', x:1000, y:450},
-        {t:'符', x:80, y:590},{t:'返回', x:270, y:590},{t:'0', x:540, y:590},{t:'空格', x:810, y:590},{t:'发送', x:1000, y:590}
+        {t:'1', x:270, y:130, group:'num'},{t:'2', x:540, y:130, group:'num'},{t:'3', x:810, y:130, group:'num'},{t:'删除', x:1000, y:130, group:'action'},
+        {t:'4', x:270, y:290, group:'num'},{t:'5', x:540, y:290, group:'num'},{t:'6', x:810, y:290, group:'num'},{t:'@', x:1000, y:290, group:'symbol'},
+        {t:'7', x:270, y:450, group:'num'},{t:'8', x:540, y:450, group:'num'},{t:'9', x:810, y:450, group:'num'},{t:'.', x:1000, y:450, group:'symbol'},
+        {t:'符', x:80, y:590, group:'symbol'},{t:'返回', x:270, y:590, group:'action'},{t:'0', x:540, y:590, group:'num'},{t:'空格', x:810, y:590, group:'action'},{t:'发送', x:1000, y:590, group:'action'}
       ];
       const keysStroke = [
-        {t:'一', x:270, y:130},{t:'丨', x:540, y:130},{t:'丿', x:810, y:130},{t:'删除', x:1000, y:130},
-        {t:'丶', x:270, y:290},{t:'乙', x:540, y:290},{t:'*', x:810, y:290},{t:'清空', x:1000, y:290},
-        {t:'\' ', x:270, y:450},{t:':', x:540, y:450},{t:';', x:810, y:450},{t:'发送', x:1000, y:450},
-        {t:'符', x:80, y:590},{t:'123', x:270, y:590},{t:'空格', x:540, y:590},{t:'c/n', x:810, y:590}
+        {t:'一', x:270, y:130, group:'num'},{t:'丨', x:540, y:130, group:'num'},{t:'丿', x:810, y:130, group:'num'},{t:'删除', x:1000, y:130, group:'action'},
+        {t:'丶', x:270, y:290, group:'num'},{t:'乙', x:540, y:290, group:'num'},{t:'*', x:810, y:290, group:'symbol'},{t:'清空', x:1000, y:290, group:'action'},
+        {t:'\' ', x:270, y:450, group:'symbol'},{t:':', x:540, y:450, group:'symbol'},{t:';', x:810, y:450, group:'symbol'},{t:'发送', x:1000, y:450, group:'action'},
+        {t:'符', x:80, y:590, group:'symbol'},{t:'123', x:270, y:590, group:'num'},{t:'空格', x:540, y:590, group:'action'},{t:'c/n', x:810, y:590, group:'action'}
       ];
       const keysHandwrite = [
-        {t:'删除', x:1000, y:130},{t:'清空', x:1000, y:290},{t:'发送', x:1000, y:450},
-        {t:'符', x:80, y:590},{t:'123', x:270, y:590},{t:'空格', x:540, y:590},{t:'c/n', x:810, y:590}
+        {t:'删除', x:1000, y:130, group:'action'},{t:'清空', x:1000, y:290, group:'action'},{t:'发送', x:1000, y:450, group:'action'},
+        {t:'符', x:80, y:590, group:'symbol'},{t:'123', x:270, y:590, group:'num'},{t:'空格', x:540, y:590, group:'action'},{t:'c/n', x:810, y:590, group:'action'}
       ];
       const keysSymbol = [
-        {t:'返回', x:80, y:590},{t:'上', x:270, y:590},{t:'下', x:540, y:590},{t:'删除', x:950, y:590}
+        {t:'返回', x:80, y:590, group:'action'},{t:'上', x:270, y:590, group:'action'},{t:'下', x:540, y:590, group:'action'},{t:'删除', x:950, y:590, group:'action'}
       ];
       const keysJp9 = [
-        {t:'あ', x:270, y:130},{t:'か', x:540, y:130},{t:'さ', x:810, y:130},
-        {t:'た', x:270, y:290},{t:'な', x:540, y:290},{t:'は', x:810, y:290},
-        {t:'ま', x:270, y:450},{t:'や', x:540, y:450},{t:'ら', x:810, y:450},
-        {t:'、。?!', x:80, y:590},{t:'^^', x:270, y:590},{t:'わ_', x:540, y:590},{t:'ABC', x:810, y:590},{t:'改行', x:1000, y:450}
+        {t:'あ', x:270, y:130, group:'letter'},{t:'か', x:540, y:130, group:'letter'},{t:'さ', x:810, y:130, group:'letter'},
+        {t:'た', x:270, y:290, group:'letter'},{t:'な', x:540, y:290, group:'letter'},{t:'は', x:810, y:290, group:'letter'},
+        {t:'ま', x:270, y:450, group:'letter'},{t:'や', x:540, y:450, group:'letter'},{t:'ら', x:810, y:450, group:'letter'},
+        {t:'、。?!', x:80, y:590, group:'symbol'},{t:'^^', x:270, y:590, group:'symbol'},{t:'わ_', x:540, y:590, group:'letter'},{t:'ABC', x:810, y:590, group:'letter'},{t:'改行', x:1000, y:450, group:'action'}
       ];
       const keysJp26 = [
-        {t:'本', x:50, y:90},{t:'ア', x:160, y:90},{t:'ス', x:270, y:90},{t:'デ', x:380, y:90},{t:'サ', x:490, y:90},
-        {t:'ザ', x:600, y:90},{t:'レ', x:710, y:90},{t:'ワ', x:820, y:90},{t:'ガ', x:930, y:90},{t:'す', x:1040, y:90},
-        {t:'キ', x:110, y:250},{t:'不', x:220, y:250},{t:'ブ', x:330, y:250},{t:'ヤ', x:440, y:250},{t:'ル', x:550, y:250},
-        {t:'ブ', x:660, y:250},{t:'リ', x:770, y:250},{t:'ン', x:880, y:250},{t:'レ', x:990, y:250},
-        {t:'↑', x:70, y:410},{t:'フ', x:220, y:410},{t:'ス', x:330, y:410},{t:'ン', x:440, y:410},{t:'ソ', x:550, y:410},
-        {t:'ザ', x:660, y:410},{t:'ザ', x:770, y:410},{t:'ブ', x:880, y:410},{t:'⌫', x:1000, y:410},
-        {t:'123', x:80, y:570},{t:'😊', x:220, y:570},{t:'空格', x:540, y:570},{t:'検索', x:1000, y:570}
+        {t:'本', x:50, y:90, group:'letter'},{t:'ア', x:160, y:90, group:'letter'},{t:'ス', x:270, y:90, group:'letter'},{t:'デ', x:380, y:90, group:'letter'},{t:'サ', x:490, y:90, group:'letter'},
+        {t:'ザ', x:600, y:90, group:'letter'},{t:'レ', x:710, y:90, group:'letter'},{t:'ワ', x:820, y:90, group:'letter'},{t:'ガ', x:930, y:90, group:'letter'},{t:'す', x:1040, y:90, group:'letter'},
+        {t:'キ', x:110, y:250, group:'letter'},{t:'不', x:220, y:250, group:'letter'},{t:'ブ', x:330, y:250, group:'letter'},{t:'ヤ', x:440, y:250, group:'letter'},{t:'ル', x:550, y:250, group:'letter'},
+        {t:'ブ', x:660, y:250, group:'letter'},{t:'リ', x:770, y:250, group:'letter'},{t:'ン', x:880, y:250, group:'letter'},{t:'レ', x:990, y:250, group:'letter'},
+        {t:'↑', x:70, y:410, group:'action'},{t:'フ', x:220, y:410, group:'letter'},{t:'ス', x:330, y:410, group:'letter'},{t:'ン', x:440, y:410, group:'letter'},{t:'ソ', x:550, y:410, group:'letter'},
+        {t:'ザ', x:660, y:410, group:'letter'},{t:'ザ', x:770, y:410, group:'letter'},{t:'ブ', x:880, y:410, group:'letter'},{t:'⌫', x:1000, y:410, group:'action'},
+        {t:'123', x:80, y:570, group:'num'},{t:'😊', x:220, y:570, group:'symbol'},{t:'空格', x:540, y:570, group:'action'},{t:'検索', x:1000, y:570, group:'action'}
       ];
 
-      let current = keys26;
+      let current = keys26v2_custom;
       let customFont = null;
-      let drag = null;
       let usingCustomFont = false;
+      
+      let baseSizes = {}; 
+      let defaultTexts = {};
 
-      function initCanvasSize() {
-        canvas.width = W;
-        canvas.height = H;
+      function initLayoutData() {
+        defaultTexts = {};
+        baseSizes = {};
+        current.forEach((k, idx) => {
+          defaultTexts[idx] = k.t;
+          if (current === keys9v2_custom || current === keys26v2_custom) {
+            if (k.group === 'num') baseSizes[idx] = 14;
+            else if (k.group === 'letter') baseSizes[idx] = 28;
+            else if (k.group === 'symbol') baseSizes[idx] = 20;
+            else baseSizes[idx] = 26;
+          } else {
+            baseSizes[idx] = 50; 
+          }
+        });
+        
+        if (current === keys9v2_custom || current === keys26v2_custom) {
+          document.getElementById('groupControlPanel').style.display = 'block';
+          document.querySelector('.group-range[data-group="num"]').value = 14;
+          document.querySelector('.group-num[data-group="num"]').value = 14;
+          document.querySelector('.group-range[data-group="letter"]').value = 28;
+          document.querySelector('.group-num[data-group="letter"]').value = 28;
+          document.querySelector('.group-range[data-group="symbol"]').value = 20;
+          document.querySelector('.group-num[data-group="symbol"]').value = 20;
+          document.querySelector('.group-range[data-group="action"]').value = 26;
+          document.querySelector('.group-num[data-group="action"]').value = 26;
+        } else {
+          document.getElementById('groupControlPanel').style.display = 'none';
+        }
       }
-      initCanvasSize();
+      initLayoutData();
+
+      canvas.width = W;
+      canvas.height = H;
 
       const weightSlider = document.getElementById('weight');
       const weightNumber = document.getElementById('weightNumber');
@@ -678,32 +479,53 @@
       const sizeDisplay = document.getElementById('sizeValue');
 
       weightSlider.addEventListener('input', () => {
-        const val = parseInt(weightSlider.value, 10);
-        weightNumber.value = val;
+        weightNumber.value = weightSlider.value;
         draw();
       });
-
       weightNumber.addEventListener('input', () => {
         let val = parseInt(weightNumber.value, 10);
-        if (isNaN(val)) return;
-        val = Math.max(10, Math.min(1200, val));
-        weightNumber.value = val;
-        weightSlider.value = val;
-        draw();
-      });
-
-      weightNumber.addEventListener('blur', () => {
-        let val = parseInt(weightNumber.value, 10);
-        if (isNaN(val)) { val = 400; }
-        val = Math.max(10, Math.min(1200, val));
-        weightNumber.value = val;
-        weightSlider.value = val;
-        draw();
+        if (!isNaN(val)) {
+          val = Math.max(10, Math.min(1200, val));
+          weightSlider.value = val;
+          draw();
+        }
       });
 
       sizeSlider.addEventListener('input', () => {
         sizeDisplay.textContent = sizeSlider.value;
         draw();
+      });
+
+      const groupRanges = document.querySelectorAll('.group-range');
+      const groupNums = document.querySelectorAll('.group-num');
+
+      function handleGroupChange(groupName, newSize) {
+        current.forEach((k, idx) => {
+          if (k.group === groupName) {
+            baseSizes[idx] = newSize;
+          }
+        });
+        draw();
+      }
+
+      groupRanges.forEach(range => {
+        range.addEventListener('input', (e) => {
+          const group = e.target.dataset.group;
+          const val = parseInt(e.target.value);
+          document.querySelector(`.group-num[data-group="${group}"]`).value = val;
+          handleGroupChange(group, val);
+        });
+      });
+
+      groupNums.forEach(num => {
+        num.addEventListener('input', (e) => {
+          const group = e.target.dataset.group;
+          const val = parseInt(e.target.value);
+          if (val >= 8 && val <= 100) {
+            document.querySelector(`.group-range[data-group="${group}"]`).value = val;
+            handleGroupChange(group, val);
+          }
+        });
       });
 
       function drawChar(text, x, y, fontSize, weight, color) {
@@ -716,14 +538,15 @@
         
         if (customFont && usingCustomFont) {
           ctx.font = `400 ${fontSize}px ${fontFace}`;
-          const offset = 0.05 + (weight / 1200) * 1.5;
-          const strokes = Math.max(1, Math.round(weight / 100));
-          
-          for (let i = 0; i < strokes; i++) {
-            const angle = (i / strokes) * Math.PI * 2;
-            const dx = Math.cos(angle) * offset;
-            const dy = Math.sin(angle) * offset;
-            ctx.fillText(text, x + dx, y + dy);
+          if (weight > 400) {
+            const offset = 0.05 + ((weight - 400) / 800) * 1.5;
+            const strokes = Math.max(1, Math.round((weight - 400) / 100));
+            for (let i = 0; i < strokes; i++) {
+              const angle = (i / strokes) * Math.PI * 2;
+              const dx = Math.cos(angle) * offset;
+              const dy = Math.sin(angle) * offset;
+              ctx.fillText(text, x + dx, y + dy);
+            }
           }
           ctx.fillText(text, x, y);
         } else {
@@ -731,31 +554,36 @@
           ctx.font = `${clampedWeight} ${fontSize}px ${fontFace}`;
           ctx.fillText(text, x, y);
         }
-        
         ctx.restore();
       }
 
       function draw() {
         ctx.clearRect(0, 0, W, H);
 
-        const fontSize = parseFloat(sizeSlider.value);
+        const globalMultiplier = parseFloat(sizeSlider.value) / 50; 
         const weight = parseInt(weightSlider.value, 10);
         const color = document.getElementById('color').value;
         const caseMode = document.getElementById('caseMode').value;
-        const isAlphaLayout = (current === keys9 || current === keys9v2 || current === keys26 || current === keysNum);
+        const isAlphaLayout = (current === keys9v2_custom || current === keys26v2_custom || current === keys9 || current === keys9v2 || current === keys26 || current === keysNum);
 
-        current.forEach(k => {
+        current.forEach((k, idx) => {
           let txt = k.t;
           if (isAlphaLayout && /^[a-zA-Z]+$/.test(txt)) {
             txt = caseMode === 'lower' ? txt.toLowerCase() : txt.toUpperCase();
           }
-          drawChar(txt, k.x, k.y, fontSize, weight, color);
+          
+          let baseSize = baseSizes[idx] || 50;
+          let finalFontSize = baseSize * globalMultiplier;
+          
+          drawChar(txt, k.x, k.y, finalFontSize, weight, color);
         });
       }
 
       document.getElementById('layout').addEventListener('change', e => {
         const val = e.target.value;
-        if(val==='9') current=keys9;
+        if(val==='9v2_custom') current=keys9v2_custom;
+        else if(val==='26v2_custom') current=keys26v2_custom;
+        else if(val==='9') current=keys9;
         else if(val==='9v2') current=keys9v2;
         else if(val==='26') current=keys26;
         else if(val==='num') current=keysNum;
@@ -765,6 +593,8 @@
         else if(val==='symbol') current=keysSymbol;
         else if(val==='jp9') current=keysJp9;
         else if(val==='jp26') current=keysJp26;
+        
+        initLayoutData();
         draw();
       });
 
@@ -782,8 +612,7 @@
             customFont = font;
             usingCustomFont = true;
             draw();
-            alert('✅ 字体加载成功！粗细通过多次描边模拟，拖动滑块或输入数值即可调整');
-          }).catch(() => alert('❌ 字体加载失败，将使用系统字体'));
+          }).catch(() => alert('❌ 字体加载失败'));
         };
         r.readAsArrayBuffer(f);
       });
@@ -793,67 +622,66 @@
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
         let clientX, clientY;
-        if (e.touches) {
-          clientX = e.touches[0].clientX;
-          clientY = e.touches[0].clientY;
-          e.preventDefault();
-        } else {
-          clientX = e.clientX;
-          clientY = e.clientY;
-        }
-        const x = (clientX - rect.left) * scaleX;
-        const y = (clientY - rect.top) * scaleY;
-        return { x, y };
+        if (e.touches) { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; e.preventDefault(); } 
+        else { clientX = e.clientX; clientY = e.clientY; }
+        return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
       }
+
+      // 【拖拽已移除】只剩点击和长按恢复
+      let longPressTimer = null, longPressed = false, clickedItem = null, clickedIdx = -1;
 
       function hitTest(e) {
         const { x, y } = getCanvasCoords(e);
-        return current.find(k => Math.hypot(x - k.x, y - k.y) < 36) || null;
+        let found = null, minDistance = Infinity;
+        current.forEach(k => {
+          const dist = Math.hypot(x - k.x, y - k.y);
+          if (dist < 50 && dist < minDistance) { found = k; minDistance = dist; }
+        });
+        return found;
       }
 
       function onPointerDown(e) {
         e.preventDefault();
-        drag = hitTest(e);
-        if (drag) {
-          drag._lastX = getCanvasCoords(e).x;
-          drag._lastY = getCanvasCoords(e).y;
-        }
-      }
+        const item = hitTest(e);
+        if (!item) return;
 
-      function onPointerMove(e) {
-        if (!drag) return;
-        e.preventDefault();
-        const { x, y } = getCanvasCoords(e);
-        const dx = x - drag._lastX;
-        const dy = y - drag._lastY;
-        if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
-          drag.x += dx;
-          drag.y += dy;
-          drag._lastX = x;
-          drag._lastY = y;
-          draw();
-        }
+        clickedItem = item;
+        clickedIdx = current.indexOf(item);
+        longPressed = false;
+
+        longPressTimer = setTimeout(() => {
+          longPressed = true;
+          if (clickedIdx !== -1) {
+            clickedItem.t = defaultTexts[clickedIdx];
+            draw();
+          }
+        }, 600);
       }
 
       function onPointerUp(e) {
-        if (drag) {
-          delete drag._lastX;
-          delete drag._lastY;
-          drag = null;
+        if (longPressTimer) clearTimeout(longPressTimer);
+        if (!longPressed && clickedItem) {
+          const newText = prompt(`修改内容 (当前: "${clickedItem.t}"):`, clickedItem.t);
+          if (newText !== null && newText.trim() !== "") {
+            clickedItem.t = newText.trim();
+            draw();
+          }
         }
+        clickedItem = null; clickedIdx = -1; longPressed = false;
       }
 
       canvas.addEventListener('mousedown', onPointerDown);
-      window.addEventListener('mousemove', (e) => {
-        if (!drag) return;
-        onPointerMove(e);
-      });
       window.addEventListener('mouseup', onPointerUp);
-
       canvas.addEventListener('touchstart', onPointerDown, { passive: false });
-      canvas.addEventListener('touchmove', onPointerMove, { passive: false });
       canvas.addEventListener('touchend', onPointerUp, { passive: false });
-      canvas.addEventListener('touchcancel', onPointerUp, { passive: false });
+      canvas.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        const item = hitTest(e);
+        if (item) {
+          const idx = current.indexOf(item);
+          if (idx !== -1) { item.t = defaultTexts[idx]; draw(); }
+        }
+      });
 
       document.getElementById('export').addEventListener('click', () => {
         try {
@@ -862,38 +690,25 @@
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             const typ = document.getElementById('layout').value;
-            let name = '';
-            if(typ==='9') name='9键';
-            else if(typ==='9v2') name='9键2';
-            else if(typ==='26') name='26键';
-            else if(typ==='num') name='数字键盘';
-            else if(typ==='num2') name='123键2';
-            else if(typ==='stroke') name='笔画键盘';
-            else if(typ==='handwrite') name='手写键盘';
-            else if(typ==='symbol') name='符号键盘';
-            else if(typ==='jp9') name='日文九键';
-            else if(typ==='jp26') name='日文26键';
-            else name='键盘';
-            a.download = name + '_1080x641.png';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(a.href);
+            let name = '键盘_1080x641.png';
+            if(typ.includes('custom')) name = typ.includes('9') ? '9键角标.png' : '26键角标.png';
+            else name = typ + '.png';
+            a.download = name;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
             alert('✅ 导出成功！1:1精准透明图');
           }, 'image/png', 1.0);
-        } catch(e) {
-          alert('导出异常：'+e.message);
-        }
+        } catch(e) { alert('导出异常：'+e.message); }
       });
 
       draw();
     })();
 
     // =============================================
-    // 模板工具代码 (原样)
+    // 模板工具逻辑 (完整保留)
     // =============================================
     (function templateInit() {
       const canvas = document.getElementById('mainCanvas');
+      if(!canvas) return;
       const ctx = canvas.getContext('2d');
       const uploadInput = document.getElementById('uploadInput');
       const gapSlider = document.getElementById('gapSlider');
@@ -911,6 +726,10 @@
       const radiusGroupRect = document.getElementById('radiusGroupRect');
       const gapVerticalGroupRect = document.getElementById('gapVerticalGroupRect');
 
+      const gapHorizontalSliderRect = document.getElementById('gapHorizontalSliderRect');
+      const gapHorizontalNumberRect = document.getElementById('gapHorizontalNumberRect');
+      const gapHorizontalGroupRect = document.getElementById('gapHorizontalGroupRect');
+
       const radiusSliderCircle = document.getElementById('radiusSliderCircle');
       const radiusNumberCircle = document.getElementById('radiusNumberCircle');
       const radiusGroupCircle = document.getElementById('radiusGroupCircle');
@@ -924,11 +743,12 @@
 
       let currentRadiusRect = 20;
       let currentGapVerticalRect = 0;
+      let currentGapHorizontalRect = 0;
       let currentRadiusPercent = 50;
       let currentGap = 6;
       let currentColor = '#000000';
 
-      window.resizeCanvasToFit = function resizeCanvasToFit() {
+      window.resizeCanvasToFit = function() {
         const wrapper = canvas.parentElement;
         const wrapperWidth = wrapper.clientWidth - 8;
         const maxHeight = Math.min(window.innerHeight * 0.5, 500);
@@ -938,21 +758,13 @@
           const imgRatio = item.originalWidth / item.originalHeight;
           let w = wrapperWidth;
           let h = w / imgRatio;
-          if (h > maxHeight) {
-            h = maxHeight;
-            w = h * imgRatio;
-          }
-          canvas.width = Math.floor(w);
-          canvas.height = Math.floor(h);
-          canvas.style.width = canvas.width + 'px';
-          canvas.style.height = canvas.height + 'px';
+          if (h > maxHeight) { h = maxHeight; w = h * imgRatio; }
+          canvas.width = Math.floor(w); canvas.height = Math.floor(h);
+          canvas.style.width = canvas.width + 'px'; canvas.style.height = canvas.height + 'px';
         } else {
-          let w = wrapperWidth;
-          let h = Math.min(w * 0.6, maxHeight);
-          canvas.width = Math.floor(w);
-          canvas.height = Math.floor(h);
-          canvas.style.width = canvas.width + 'px';
-          canvas.style.height = canvas.height + 'px';
+          let w = wrapperWidth; let h = Math.min(w * 0.6, maxHeight);
+          canvas.width = Math.floor(w); canvas.height = Math.floor(h);
+          canvas.style.width = canvas.width + 'px'; canvas.style.height = canvas.height + 'px';
         }
         drawPreview();
       };
@@ -962,6 +774,7 @@
         if (mode === 'rect') {
           radiusGroupRect.style.display = 'flex';
           gapVerticalGroupRect.style.display = 'flex';
+          gapHorizontalGroupRect.style.display = 'flex';
           radiusGroupCircle.style.display = 'none';
           document.querySelector('.template-app .mode-tab[data-mode="rect"]').classList.add('active');
           document.querySelector('.template-app .mode-tab[data-mode="circle"]').classList.remove('active');
@@ -969,9 +782,12 @@
           radiusNumberRect.value = currentRadiusRect;
           gapVerticalSliderRect.value = currentGapVerticalRect;
           gapVerticalNumberRect.value = currentGapVerticalRect;
+          gapHorizontalSliderRect.value = currentGapHorizontalRect;
+          gapHorizontalNumberRect.value = currentGapHorizontalRect;
         } else {
           radiusGroupRect.style.display = 'none';
           gapVerticalGroupRect.style.display = 'none';
+          gapHorizontalGroupRect.style.display = 'none';
           radiusGroupCircle.style.display = 'flex';
           document.querySelector('.template-app .mode-tab[data-mode="circle"]').classList.add('active');
           document.querySelector('.template-app .mode-tab[data-mode="rect"]').classList.remove('active');
@@ -1010,10 +826,8 @@
               let minX = x, maxX = x, minY = y, maxY = y;
               while (queue.length > 0) {
                 const [cx, cy] = queue.shift();
-                minX = Math.min(minX, cx);
-                maxX = Math.max(maxX, cx);
-                minY = Math.min(minY, cy);
-                maxY = Math.max(maxY, cy);
+                minX = Math.min(minX, cx); maxX = Math.max(maxX, cx);
+                minY = Math.min(minY, cy); maxY = Math.max(maxY, cy);
                 const neighbors = [[cx-step,cy],[cx+step,cy],[cx,cy-step],[cx,cy+step]];
                 for (const [nx, ny] of neighbors) {
                   if (nx>=0 && nx<width && ny>=0 && ny<height) {
@@ -1025,12 +839,9 @@
                   }
                 }
               }
-              minX = Math.max(0, minX - step/2);
-              minY = Math.max(0, minY - step/2);
-              maxX = Math.min(width-1, maxX + step/2);
-              maxY = Math.min(height-1, maxY + step/2);
-              const w = maxX - minX + 1;
-              const h = maxY - minY + 1;
+              minX = Math.max(0, minX - step/2); minY = Math.max(0, minY - step/2);
+              maxX = Math.min(width-1, maxX + step/2); maxY = Math.min(height-1, maxY + step/2);
+              const w = maxX - minX + 1; const h = maxY - minY + 1;
               if (w > 8 && h > 8) rects.push({x:minX, y:minY, w:w, h:h});
             }
           }
@@ -1049,10 +860,8 @@
             const dx = Math.abs(c1x-c2x), dy=Math.abs(c1y-c2y);
             const avgW=(cur.w+rects[j].w)/2, avgH=(cur.h+rects[j].h)/2;
             if (dx < avgW*0.8 && dy < avgH*0.8) {
-              const nx = Math.min(cur.x, rects[j].x);
-              const ny = Math.min(cur.y, rects[j].y);
-              const nx2 = Math.max(cur.x+cur.w, rects[j].x+rects[j].w);
-              const ny2 = Math.max(cur.y+cur.h, rects[j].y+rects[j].h);
+              const nx = Math.min(cur.x, rects[j].x); const ny = Math.min(cur.y, rects[j].y);
+              const nx2 = Math.max(cur.x+cur.w, rects[j].x+rects[j].w); const ny2 = Math.max(cur.y+cur.h, rects[j].y+rects[j].h);
               cur = {x:nx, y:ny, w:nx2-nx, h:ny2-ny};
               used[j]=true;
             }
@@ -1062,41 +871,33 @@
         return merged;
       }
 
-      function renderImage(item, width, height, radiusRect, gapVertical, radiusPercent, gap, color, mode) {
+      function renderImage(item, width, height, radiusRect, gapVertical, gapHorizontal, radiusPercent, gap, color, mode) {
         const c = document.createElement('canvas');
-        c.width = width;
-        c.height = height;
+        c.width = width; c.height = height;
         const cx = c.getContext('2d');
         cx.clearRect(0, 0, width, height);
 
-        const gapOrig = gap;
-        const gapVerticalOrig = gapVertical;
-
         for (const rect of item.detectedRects) {
           const x = rect.x, y = rect.y, w = rect.w, h = rect.h;
-          let drawW = Math.max(w - gapOrig, 2);
-          let drawH = Math.max(h - gapOrig, 2);
-          let x0 = x + gapOrig/2;
-          let y0 = y + gapOrig/2;
-          const cx2 = x + w/2;
-          const cy2 = y + h/2;
+          let drawW = Math.max(w - gap, 2);
+          let drawH = Math.max(h - gap, 2);
+          let x0 = x + gap/2; let y0 = y + gap/2;
+          const cx2 = x + w/2; const cy2 = y + h/2;
 
           cx.fillStyle = color;
 
           if (mode === 'rect') {
-            const halfGapV = gapVerticalOrig / 2;
-            y0 = y0 + halfGapV;
-            drawH = Math.max(drawH - gapVerticalOrig, 2);
+            const halfGapV = gapVertical / 2;
+            y0 = y0 + halfGapV; drawH = Math.max(drawH - gapVertical, 2);
+            const halfGapH = gapHorizontal / 2;
+            x0 = x0 + halfGapH; drawW = Math.max(drawW - gapHorizontal, 2);
+
             const radiusOrig = Math.min(radiusRect, drawW/2, drawH/2);
-            cx.beginPath();
-            roundedRectPath(cx, x0, y0, drawW, drawH, radiusOrig);
-            cx.fill();
+            cx.beginPath(); roundedRectPath(cx, x0, y0, drawW, drawH, radiusOrig); cx.fill();
           } else {
             const baseDiam = Math.min(drawW, drawH);
             const r = (baseDiam / 2) * (radiusPercent / 100);
-            cx.beginPath();
-            cx.arc(cx2, cy2, r, 0, Math.PI*2);
-            cx.fill();
+            cx.beginPath(); cx.arc(cx2, cy2, r, 0, Math.PI*2); cx.fill();
           }
         }
         return c;
@@ -1117,16 +918,12 @@
       }
 
       function drawPreview() {
-        const w = canvas.width;
-        const h = canvas.height;
+        const w = canvas.width; const h = canvas.height;
         ctx.clearRect(0, 0, w, h);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h);
         
         if (currentIndex < 0 || currentIndex >= imageItems.length) {
-          ctx.fillStyle = '#b0a8bf';
-          ctx.font = '18px system-ui, sans-serif';
-          ctx.textAlign = 'center';
+          ctx.fillStyle = '#b0a8bf'; ctx.font = '18px system-ui, sans-serif'; ctx.textAlign = 'center';
           ctx.fillText('📂 导入图片 (可多选)', w/2, h/2);
           rectCountSpan.textContent = '识别到 0 个图块';
           imageIndexSpan.textContent = '图片 0 / 0';
@@ -1144,36 +941,31 @@
 
         const gap = currentGap * displayScale;
         const gapVertical = currentGapVerticalRect * displayScale;
+        const gapHorizontal = currentGapHorizontalRect * displayScale;
 
         for (const rect of item.detectedRects) {
           const sx = rect.x * displayScale + offsetX;
           const sy = rect.y * displayScale + offsetY;
-          const sw = rect.w * displayScale;
-          const sh = rect.h * displayScale;
+          const sw = rect.w * displayScale; const sh = rect.h * displayScale;
 
-          let drawW = Math.max(sw - gap, 2);
-          let drawH = Math.max(sh - gap, 2);
-          let x0 = sx + gap/2;
-          let y0 = sy + gap/2;
+          let drawW = Math.max(sw - gap, 2); let drawH = Math.max(sh - gap, 2);
+          let x0 = sx + gap/2; let y0 = sy + gap/2;
 
           if (currentMode === 'rect') {
             const halfGapV = gapVertical / 2;
-            y0 = y0 + halfGapV;
-            drawH = Math.max(drawH - gapVertical, 2);
+            y0 = y0 + halfGapV; drawH = Math.max(drawH - gapVertical, 2);
+            const halfGapH = gapHorizontal / 2;
+            x0 = x0 + halfGapH; drawW = Math.max(drawW - gapHorizontal, 2);
+
             const radiusCanvas = Math.min(currentRadiusRect * displayScale, drawW/2, drawH/2);
             ctx.fillStyle = currentColor;
-            ctx.beginPath();
-            roundedRectPath(ctx, x0, y0, drawW, drawH, radiusCanvas);
-            ctx.fill();
+            ctx.beginPath(); roundedRectPath(ctx, x0, y0, drawW, drawH, radiusCanvas); ctx.fill();
           } else {
             const baseDiam = Math.min(drawW, drawH);
             const radius = (baseDiam / 2) * (currentRadiusPercent / 100);
-            const cx = sx + sw/2;
-            const cy = sy + sh/2;
+            const cx = sx + sw/2; const cy = sy + sh/2;
             ctx.fillStyle = currentColor;
-            ctx.beginPath();
-            ctx.arc(cx, cy, radius, 0, Math.PI*2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI*2); ctx.fill();
           }
         }
 
@@ -1188,25 +980,20 @@
           const img = new Image();
           img.onload = () => {
             const item = {
-              id: nextId++,
-              sourceImage: img,
+              id: nextId++, sourceImage: img,
               originalWidth: img.naturalWidth || img.width,
               originalHeight: img.naturalHeight || img.height,
-              fileName: file.name,
-              detectedRects: []
+              fileName: file.name, detectedRects: []
             };
             const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = item.originalWidth;
-            tempCanvas.height = item.originalHeight;
+            tempCanvas.width = item.originalWidth; tempCanvas.height = item.originalHeight;
             const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
             tempCtx.drawImage(img, 0, 0);
             item.detectedRects = detectRectangles(tempCanvas);
             imageItems.push(item);
             loaded++;
             if (loaded === fileArray.length) {
-              if (currentIndex < 0 || currentIndex >= imageItems.length) {
-                currentIndex = 0;
-              }
+              if (currentIndex < 0 || currentIndex >= imageItems.length) currentIndex = 0;
               updateThumbnails();
               window.resizeCanvasToFit();
             }
@@ -1227,14 +1014,10 @@
           const div = document.createElement('div');
           div.className = 'thumb-item' + (idx === currentIndex ? ' active' : '');
           const img = document.createElement('img');
-          img.src = item.sourceImage.src;
-          img.alt = item.fileName;
-          div.appendChild(img);
-          div.title = item.fileName;
+          img.src = item.sourceImage.src; img.alt = item.fileName;
+          div.appendChild(img); div.title = item.fileName;
           div.addEventListener('click', () => {
-            currentIndex = idx;
-            updateThumbnails();
-            window.resizeCanvasToFit();
+            currentIndex = idx; updateThumbnails(); window.resizeCanvasToFit();
           });
           thumbnailsContainer.appendChild(div);
         });
@@ -1242,115 +1025,52 @@
 
       function bindSliderNumber(slider, number, callback) {
         slider.addEventListener('input', () => {
-          number.value = slider.value;
-          callback(parseFloat(slider.value));
+          number.value = slider.value; callback(parseFloat(slider.value));
         });
         number.addEventListener('input', () => {
           let val = parseFloat(number.value);
           if (isNaN(val)) return;
-          const min = parseFloat(slider.min);
-          const max = parseFloat(slider.max);
+          const min = parseFloat(slider.min); const max = parseFloat(slider.max);
           val = Math.min(max, Math.max(min, val));
-          slider.value = val;
-          number.value = val;
-          callback(val);
-        });
-        number.addEventListener('blur', () => {
-          let val = parseFloat(number.value);
-          if (isNaN(val)) {
-            val = parseFloat(slider.min);
-            number.value = val;
-          }
-          const min = parseFloat(slider.min);
-          const max = parseFloat(slider.max);
-          val = Math.min(max, Math.max(min, val));
-          slider.value = val;
-          number.value = val;
-          callback(val);
+          slider.value = val; number.value = val; callback(val);
         });
       }
 
-      bindSliderNumber(radiusSliderRect, radiusNumberRect, (val) => {
-        currentRadiusRect = val;
-        drawPreview();
-      });
-      bindSliderNumber(gapVerticalSliderRect, gapVerticalNumberRect, (val) => {
-        currentGapVerticalRect = val;
-        drawPreview();
-      });
-      bindSliderNumber(radiusSliderCircle, radiusNumberCircle, (val) => {
-        currentRadiusPercent = val;
-        drawPreview();
-      });
-      bindSliderNumber(gapSlider, gapNumber, (val) => {
-        currentGap = val;
-        drawPreview();
-      });
-      colorPicker.addEventListener('input', (e) => {
-        currentColor = e.target.value;
-        drawPreview();
-      });
+      bindSliderNumber(radiusSliderRect, radiusNumberRect, (val) => { currentRadiusRect = val; drawPreview(); });
+      bindSliderNumber(gapVerticalSliderRect, gapVerticalNumberRect, (val) => { currentGapVerticalRect = val; drawPreview(); });
+      bindSliderNumber(gapHorizontalSliderRect, gapHorizontalNumberRect, (val) => { currentGapHorizontalRect = val; drawPreview(); });
+      bindSliderNumber(radiusSliderCircle, radiusNumberCircle, (val) => { currentRadiusPercent = val; drawPreview(); });
+      bindSliderNumber(gapSlider, gapNumber, (val) => { currentGap = val; drawPreview(); });
+      colorPicker.addEventListener('input', (e) => { currentColor = e.target.value; drawPreview(); });
 
       exportAllBtn.addEventListener('click', async () => {
-        if (imageItems.length === 0) {
-          alert('请先导入图片');
-          return;
-        }
+        if (imageItems.length === 0) { alert('请先导入图片'); return; }
 
         if (imageItems.length === 1) {
           const item = imageItems[0];
-          const exportCanvas = renderImage(
-            item,
-            item.originalWidth,
-            item.originalHeight,
-            currentRadiusRect,
-            currentGapVerticalRect,
-            currentRadiusPercent,
-            currentGap,
-            currentColor,
-            currentMode
-          );
+          const exportCanvas = renderImage(item, item.originalWidth, item.originalHeight, currentRadiusRect, currentGapVerticalRect, currentGapHorizontalRect, currentRadiusPercent, currentGap, currentColor, currentMode);
           const link = document.createElement('a');
           const baseName = item.fileName.replace(/\.[^.]+$/, '') + '_template.png';
-          link.download = baseName;
-          link.href = exportCanvas.toDataURL('image/png');
-          link.click();
+          link.download = baseName; link.href = exportCanvas.toDataURL('image/png'); link.click();
           return;
         }
 
         try {
-          const JSZip = window.JSZip;
           const zip = new JSZip();
           const folder = zip.folder('templates');
-
           for (const item of imageItems) {
-            const exportCanvas = renderImage(
-              item,
-              item.originalWidth,
-              item.originalHeight,
-              currentRadiusRect,
-              currentGapVerticalRect,
-              currentRadiusPercent,
-              currentGap,
-              currentColor,
-              currentMode
-            );
+            const exportCanvas = renderImage(item, item.originalWidth, item.originalHeight, currentRadiusRect, currentGapVerticalRect, currentGapHorizontalRect, currentRadiusPercent, currentGap, currentColor, currentMode);
             const dataUrl = exportCanvas.toDataURL('image/png');
             const blob = await fetch(dataUrl).then(res => res.blob());
             const baseName = item.fileName.replace(/\.[^.]+$/, '') + '_template.png';
             folder.file(baseName, blob);
           }
-
           const zipBlob = await zip.generateAsync({ type: 'blob' });
           saveAs(zipBlob, 'templates_export.zip');
-        } catch (err) {
-          alert('导出失败: ' + err.message);
-          console.error(err);
-        }
+        } catch (err) { alert('导出失败: ' + err.message); }
       });
 
       window.addEventListener('resize', window.resizeCanvasToFit);
-
       setMode('rect');
       setTimeout(window.resizeCanvasToFit, 50);
     })();
