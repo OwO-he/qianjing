@@ -32,7 +32,7 @@
     @media (min-width: 860px) {
       .main-layout { flex-direction: row; align-items: flex-start; justify-content: center; }
       .preview-column { flex: 1; max-width: 700px; position: sticky; top: 12px; }
-      .control-column { width: 360px; flex-shrink: 0; }
+      .control-column { width: 380px; flex-shrink: 0; }
     }
 
     /* 面板基础样式 */
@@ -233,28 +233,28 @@
             <div class="control-group">
               <div class="control-label">数字组</div>
               <div class="control-inputs">
-                <input type="range" class="group-range" data-group="num" min="8" max="60" value="14">
+                <input type="range" class="group-range" data-group="num" min="8" max="80" value="14">
                 <input type="number" class="group-num" data-group="num" min="8" max="100" value="14">
               </div>
             </div>
             <div class="control-group">
               <div class="control-label">字母组</div>
               <div class="control-inputs">
-                <input type="range" class="group-range" data-group="letter" min="8" max="60" value="28">
+                <input type="range" class="group-range" data-group="letter" min="8" max="80" value="28">
                 <input type="number" class="group-num" data-group="letter" min="8" max="100" value="28">
               </div>
             </div>
             <div class="control-group">
               <div class="control-label">符号组</div>
               <div class="control-inputs">
-                <input type="range" class="group-range" data-group="symbol" min="8" max="60" value="20">
+                <input type="range" class="group-range" data-group="symbol" min="8" max="80" value="20">
                 <input type="number" class="group-num" data-group="symbol" min="8" max="100" value="20">
               </div>
             </div>
             <div class="control-group">
               <div class="control-label">功能组</div>
               <div class="control-inputs">
-                <input type="range" class="group-range" data-group="action" min="8" max="60" value="26">
+                <input type="range" class="group-range" data-group="action" min="8" max="80" value="26">
                 <input type="number" class="group-num" data-group="action" min="8" max="100" value="26">
               </div>
             </div>
@@ -586,29 +586,31 @@
         baseSizes = {};
         current.forEach((k, idx) => {
           defaultTexts[idx] = k.t;
-          if (current === keys9v2_custom || current === keys26v2_custom) {
+          // 所有布局都支持分组调节，这里给所有类型分配基础字号默认值
+          if (k.group === 'num') baseSizes[idx] = 20;
+          else if (k.group === 'letter') baseSizes[idx] = 26;
+          else if (k.group === 'symbol') baseSizes[idx] = 22;
+          else baseSizes[idx] = 24; 
+        });
+        
+        // 针对精调版覆盖默认字号
+        if (current === keys9v2_custom || current === keys26v2_custom) {
+          current.forEach((k, idx) => {
             if (k.group === 'num') baseSizes[idx] = 14;
             else if (k.group === 'letter') baseSizes[idx] = 28;
             else if (k.group === 'symbol') baseSizes[idx] = 20;
             else baseSizes[idx] = 26;
-          } else {
-            baseSizes[idx] = 50; 
-          }
-        });
-        
-        if (current === keys9v2_custom || current === keys26v2_custom) {
-          document.getElementById('groupControlPanel').style.display = 'flex';
-          document.querySelector('.group-range[data-group="num"]').value = 14;
-          document.querySelector('.group-num[data-group="num"]').value = 14;
-          document.querySelector('.group-range[data-group="letter"]').value = 28;
-          document.querySelector('.group-num[data-group="letter"]').value = 28;
-          document.querySelector('.group-range[data-group="symbol"]').value = 20;
-          document.querySelector('.group-num[data-group="symbol"]').value = 20;
-          document.querySelector('.group-range[data-group="action"]').value = 26;
-          document.querySelector('.group-num[data-group="action"]').value = 26;
-        } else {
-          document.getElementById('groupControlPanel').style.display = 'none';
+          });
         }
+
+        // 更新UI控件的数值以匹配当前基础字号
+        ['num', 'letter', 'symbol', 'action'].forEach(g => {
+          const size = baseSizes[current.findIndex(k => k.group === g)] || 20;
+          const rangeEl = document.querySelector(`.group-range[data-group="${g}"]`);
+          const numEl = document.querySelector(`.group-num[data-group="${g}"]`);
+          if(rangeEl) rangeEl.value = size;
+          if(numEl) numEl.value = size;
+        });
       }
       initLayoutData();
 
@@ -757,7 +759,7 @@
             txt = caseMode === 'lower' ? txt.toLowerCase() : txt.toUpperCase();
           }
           
-          let baseSize = baseSizes[idx] || 50;
+          let baseSize = baseSizes[idx] || 20;
           let finalFontSize = baseSize * globalMultiplier;
           
           // 应用分组偏移
@@ -784,6 +786,14 @@
         else if(val==='jp9') current=keysJp9;
         else if(val==='jp26') current=keysJp26;
         
+        // 切换布局时清空偏移，避免视觉错乱
+        ['num', 'letter', 'symbol', 'action'].forEach(g => {
+          groupOffsets[g].x = 0;
+          groupOffsets[g].y = 0;
+        });
+        offsetRanges.forEach(el => el.value = 0);
+        offsetNums.forEach(el => el.value = 0);
+
         initLayoutData();
         draw();
       });
@@ -817,7 +827,6 @@
         return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
       }
 
-      // 【拖拽已移除】只剩点击和长按恢复
       let longPressTimer = null, longPressed = false, clickedItem = null, clickedIdx = -1;
 
       function hitTest(e) {
