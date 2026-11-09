@@ -10,7 +10,7 @@
     
     /* 顶部切换按钮 */
     .tab-bar {
-      display: flex; gap: 8px; width: 100%; max-width: 700px;
+      display: flex; gap: 8px; width: 100%; max-width: 1100px;
       background: #fff; border-radius: 16px; padding: 6px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
@@ -22,11 +22,21 @@
     .tab-btn.active { background: #2563eb; color: #fff; box-shadow: 0 4px 8px rgba(37,99,235,0.2); }
     .tab-btn:active { transform: scale(0.97); }
 
-    .page { display: none; width: 100%; max-width: 700px; flex-direction: column; align-items: center; gap: 12px; }
+    .page { display: none; width: 100%; max-width: 1100px; flex-direction: column; align-items: center; gap: 12px; }
     .page.active { display: flex; }
 
-    /* 前景工具样式 */
-    .panel{background:#fff;padding:14px 12px;border-radius:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;width:100%;max-width:700px;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+    /* 前景工具主布局 (宽屏并排) */
+    .main-layout {
+      display: flex; flex-direction: column; gap: 12px; width: 100%;
+    }
+    @media (min-width: 860px) {
+      .main-layout { flex-direction: row; align-items: flex-start; justify-content: center; }
+      .preview-column { flex: 1; max-width: 700px; position: sticky; top: 12px; }
+      .control-column { width: 360px; flex-shrink: 0; }
+    }
+
+    /* 面板基础样式 */
+    .panel{background:#fff;padding:14px 12px;border-radius:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;width:100%;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
     .control{display:flex;flex-direction:column;gap:4px;}
     label{font-size:13px;font-weight:500;color:#1e293b;}
     input,button,select{padding:8px 10px;border-radius:8px;border:1px solid #d1d5db;font-size:14px;background:#fff;width:100%;}
@@ -37,23 +47,7 @@
     .title h2{font-size:18px;font-weight:600;color:#0f172a;letter-spacing:-0.3px;}
     .title h2 span{color:#2563eb;}
 
-    .side-panel { display: flex; gap: 15px; align-items: flex-start; width: 100%; max-width: 700px; }
-    .right-panel {
-      width: 340px; background: white; padding: 15px; border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-height: calc(100vh - 40px);
-      overflow-y: auto; flex-shrink: 0;
-    }
-
-    .panel-section { margin-bottom: 20px; background: #f9f9f9; padding: 10px; border-radius: 6px; border: 1px solid #eee; }
-    .panel-section h3 { margin: 0 0 10px 0; font-size: 15px; color: #007bff; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; }
-    .control-group { margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
-    .control-group:last-child { margin-bottom: 0; }
-    .control-label { font-size: 13px; width: 70px; font-weight: bold; color: #555; white-space: nowrap; }
-    .control-inputs { display: flex; align-items: center; gap: 8px; flex: 1; }
-    input[type="range"] { flex: 1; height: 20px; accent-color: #2563eb; }
-    input[type="number"] { width: 45px; padding: 4px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-size: 16px; }
-
-    .preview-wrapper{ width:100%; max-width:700px; background:#fff; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.08); padding:8px; border:2px solid #2563eb; box-sizing:border-box; }
+    .preview-wrapper{ width:100%; background:#fff; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.08); padding:8px; border:2px solid #2563eb; box-sizing:border-box; }
     .preview-box{ position:relative; width:100%; aspect-ratio: 1080 / 641; background:#ffffff; border-radius:10px; overflow:hidden; }
     #canvas{ position:absolute; width:100%; height:100%; background:transparent; z-index:2; touch-action: none; }
     .hint-mobile{ font-size:11px; color:#94a3b8; text-align:center; padding:6px 0 2px; }
@@ -61,6 +55,58 @@
     .weight-input-row{ display:flex; gap:8px; align-items:center; }
     .weight-input-row input[type="number"]{ width:70px; flex-shrink:0; padding:6px 4px; text-align:center; font-weight:600; }
     .weight-input-row input[type="range"]{ flex:1; }
+
+    /* 右侧调节面板 */
+    .right-panel {
+      width: 100%; background: white; padding: 12px; border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 10px;
+    }
+
+    /* 折叠面板样式 (手风琴) */
+    .accordion {
+      background: #f9f9f9; border-radius: 8px; border: 1px solid #eee; overflow: hidden;
+    }
+    .accordion-header {
+      padding: 12px 15px; font-size: 14px; font-weight: 600; color: #007bff;
+      cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+      user-select: none; background: #f9f9f9;
+    }
+    .accordion-header:hover { background: #f1f5f9; }
+    .accordion-header::after {
+      content: '▼'; font-size: 10px; transition: transform 0.3s; color: #94a3b8;
+    }
+    .accordion.open .accordion-header::after {
+      transform: rotate(180deg);
+    }
+    .accordion-content {
+      display: none; padding: 12px 15px; background: #fff; border-top: 1px solid #eee;
+      flex-direction: column; gap: 10px;
+    }
+    .accordion.open .accordion-content {
+      display: flex;
+    }
+
+    /* 控制组通用样式 */
+    .control-group { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .control-label { font-size: 13px; width: 45px; font-weight: bold; color: #555; white-space: nowrap; flex-shrink: 0;}
+    .control-inputs { display: flex; align-items: center; gap: 8px; flex: 1; }
+    input[type="range"] { flex: 1; height: 20px; accent-color: #2563eb; min-width: 0; }
+    input[type="number"] { width: 50px; padding: 4px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-size: 14px; flex-shrink: 0; }
+
+    /* 坐标双栏并排样式 */
+    .coord-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
+    .coord-group-label { font-size: 13px; font-weight: bold; color: #555; margin-top: 5px; margin-bottom: 2px; }
+    .coord-axis-group { display: flex; align-items: center; gap: 6px; background: #f8fafc; padding: 4px 8px; border-radius: 6px; border: 1px solid #e2e8f0;}
+    .coord-axis-group span { font-size: 12px; color: #64748b; font-weight: bold; }
+    .coord-axis-group input[type="range"] { flex: 1; }
+    .coord-axis-group input[type="number"] { width: 44px; padding: 2px; }
+
+    .reset-btn {
+      width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #d1d5db;
+      background: #f8fafc; color: #334155; font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: background 0.15s; margin-top: 8px;
+    }
+    .reset-btn:active { background: #e2e8f0; }
 
     /* 模板工具样式 */
     .template-app {
@@ -98,8 +144,6 @@
     .template-app .control-right { display: flex; align-items: center; gap: 14px; margin-left: auto; flex-wrap: wrap; }
 
     @media (max-width: 768px) {
-      .side-panel { flex-direction: column; }
-      .right-panel { width: 100%; max-height: none; }
       .panel{grid-template-columns:1fr 1fr;gap:8px;}
       .template-app .control-panel { flex-direction: column; align-items: stretch; }
       .template-app .control-right { margin-left: 0; justify-content: center; }
@@ -115,98 +159,179 @@
 
 <!-- ======== 页面1: 前景工具 ======== -->
 <div id="page1" class="page active">
-  <div class="panel">
-    <div class="title"><h2>⌨️ <span>昀の前景</span> · 多布局 1:1 精准工具</h2></div>
-    <div class="control">
-      <label>选择布局</label>
-      <select id="layout">
-        <option value="9v2_custom">⭐ 9键角标 (精调版)</option>
-        <option value="26v2_custom" selected>⭐ 26键角标 (精调版)</option>
-        <option value="9">9键键盘 (旧)</option>
-        <option value="9v2">9键2 (旧)</option>
-        <option value="26">26键键盘 (旧)</option>
-        <option value="num">数字键盘</option>
-        <option value="num2">123键2（图一）</option>
-        <option value="stroke">笔画键盘（图二）</option>
-        <option value="handwrite">手写键盘（图三）</option>
-        <option value="symbol">符号键盘（图四）</option>
-        <option value="jp9">日文九键</option>
-        <option value="jp26">日文26键</option>
-      </select>
-    </div>
-    <div class="control">
-      <label>字母大小写</label>
-      <select id="caseMode">
-        <option value="upper" selected>大写 A</option>
-        <option value="lower">小写 a</option>
-      </select>
-    </div>
-    <div class="control">
-      <label>上传字体</label>
-      <input type="file" id="fontInput" accept=".ttf,.otf">
-    </div>
-    <div class="control">
-      <label>字体颜色</label>
-      <input type="color" id="color" value="#000000">
-    </div>
-    <div class="control">
-      <label>粗细</label>
-      <div class="weight-input-row">
-        <input type="range" id="weight" min="10" max="1200" step="5" value="100">
-        <input type="number" id="weightNumber" min="10" max="1200" value="100">
+  <div class="main-layout">
+    
+    <!-- 左侧(或上侧) 预览与主设置 -->
+    <div class="preview-column" style="display:flex; flex-direction:column; gap:12px; width:100%;">
+      <div class="panel">
+        <div class="title"><h2>⌨️ <span>昀の前景</span> · 多布局 1:1 精准工具</h2></div>
+        <div class="control">
+          <label>选择布局</label>
+          <select id="layout">
+            <option value="9v2_custom">⭐ 9键角标 (精调版)</option>
+            <option value="26v2_custom" selected>⭐ 26键角标 (精调版)</option>
+            <option value="9">9键键盘 (旧)</option>
+            <option value="9v2">9键2 (旧)</option>
+            <option value="26">26键键盘 (旧)</option>
+            <option value="num">数字键盘</option>
+            <option value="num2">123键2（图一）</option>
+            <option value="stroke">笔画键盘（图二）</option>
+            <option value="handwrite">手写键盘（图三）</option>
+            <option value="symbol">符号键盘（图四）</option>
+            <option value="jp9">日文九键</option>
+            <option value="jp26">日文26键</option>
+          </select>
+        </div>
+        <div class="control">
+          <label>字母大小写</label>
+          <select id="caseMode">
+            <option value="upper" selected>大写 A</option>
+            <option value="lower">小写 a</option>
+          </select>
+        </div>
+        <div class="control">
+          <label>上传字体</label>
+          <input type="file" id="fontInput" accept=".ttf,.otf">
+        </div>
+        <div class="control">
+          <label>字体颜色</label>
+          <input type="color" id="color" value="#000000">
+        </div>
+        <div class="control">
+          <label>粗细</label>
+          <div class="weight-input-row">
+            <input type="range" id="weight" min="10" max="1200" step="5" value="100">
+            <input type="number" id="weightNumber" min="10" max="1200" value="100">
+          </div>
+        </div>
+        <div class="control">
+          <label>整体大小 <span class="weight-badge" id="sizeValue">50</span></label>
+          <input type="range" id="fontSize" min="16" max="100" step="1" value="50">
+        </div>
+        <div class="control" style="grid-column:1/-1;">
+          <button id="export">✅ 导出 1080×641 透明PNG</button>
+          <div class="hint">单击画布改字 · 长按/右键恢复默认</div>
+        </div>
       </div>
-    </div>
-    <div class="control">
-      <label>整体大小 <span class="weight-badge" id="sizeValue">50</span></label>
-      <input type="range" id="fontSize" min="16" max="100" step="1" value="50">
-    </div>
-    <div class="control" style="grid-column:1/-1;">
-      <button id="export">✅ 导出 1080×641 透明PNG</button>
-      <div class="hint">单击画布改字 · 长按/右键恢复默认</div>
-    </div>
-  </div>
 
-  <div class="side-panel">
-    <div class="preview-wrapper" style="flex:1;">
-      <div class="preview-box">
-        <canvas id="canvas"></canvas>
+      <div class="preview-wrapper">
+        <div class="preview-box">
+          <canvas id="canvas"></canvas>
+        </div>
+        <div class="hint-mobile">← 单击改字 · 点击导出高清PNG →</div>
       </div>
-      <div class="hint-mobile">← 单击改字 · 点击导出高清PNG →</div>
     </div>
 
-    <div class="right-panel" id="groupControlPanel">
-      <div class="panel-section">
-        <h3>分组字号调节 (仅精调版生效)</h3>
-        <div class="control-group">
-          <div class="control-label">数字组</div>
-          <div class="control-inputs">
-            <input type="range" class="group-range" data-group="num" min="8" max="60" value="14">
-            <input type="number" class="group-num" data-group="num" min="8" max="100" value="14">
+    <!-- 右侧(或下侧) 分组调节面板 (手风琴) -->
+    <div class="control-column">
+      <div class="right-panel" id="groupControlPanel">
+        
+        <!-- 分组字号调节 -->
+        <div class="accordion" id="accFontSize">
+          <div class="accordion-header">🔠 分组字号调节</div>
+          <div class="accordion-content">
+            <div class="control-group">
+              <div class="control-label">数字组</div>
+              <div class="control-inputs">
+                <input type="range" class="group-range" data-group="num" min="8" max="60" value="14">
+                <input type="number" class="group-num" data-group="num" min="8" max="100" value="14">
+              </div>
+            </div>
+            <div class="control-group">
+              <div class="control-label">字母组</div>
+              <div class="control-inputs">
+                <input type="range" class="group-range" data-group="letter" min="8" max="60" value="28">
+                <input type="number" class="group-num" data-group="letter" min="8" max="100" value="28">
+              </div>
+            </div>
+            <div class="control-group">
+              <div class="control-label">符号组</div>
+              <div class="control-inputs">
+                <input type="range" class="group-range" data-group="symbol" min="8" max="60" value="20">
+                <input type="number" class="group-num" data-group="symbol" min="8" max="100" value="20">
+              </div>
+            </div>
+            <div class="control-group">
+              <div class="control-label">功能组</div>
+              <div class="control-inputs">
+                <input type="range" class="group-range" data-group="action" min="8" max="60" value="26">
+                <input type="number" class="group-num" data-group="action" min="8" max="100" value="26">
+              </div>
+            </div>
           </div>
         </div>
-        <div class="control-group">
-          <div class="control-label">字母组</div>
-          <div class="control-inputs">
-            <input type="range" class="group-range" data-group="letter" min="8" max="60" value="28">
-            <input type="number" class="group-num" data-group="letter" min="8" max="100" value="28">
+
+        <!-- 分组坐标微调 -->
+        <div class="accordion" id="accCoordinate">
+          <div class="accordion-header">📍 分组坐标微调</div>
+          <div class="accordion-content">
+            <!-- 数字组 -->
+            <div class="coord-group-label">数字组</div>
+            <div class="coord-grid">
+              <div class="coord-axis-group">
+                <span>X</span>
+                <input type="range" class="group-offset-range" data-group="num" data-axis="x" min="-200" max="200" value="0" step="1">
+                <input type="number" class="group-offset-num" data-group="num" data-axis="x" min="-200" max="200" value="0" step="1">
+              </div>
+              <div class="coord-axis-group">
+                <span>Y</span>
+                <input type="range" class="group-offset-range" data-group="num" data-axis="y" min="-200" max="200" value="0" step="1">
+                <input type="number" class="group-offset-num" data-group="num" data-axis="y" min="-200" max="200" value="0" step="1">
+              </div>
+            </div>
+
+            <!-- 字母组 -->
+            <div class="coord-group-label">字母组</div>
+            <div class="coord-grid">
+              <div class="coord-axis-group">
+                <span>X</span>
+                <input type="range" class="group-offset-range" data-group="letter" data-axis="x" min="-200" max="200" value="0" step="1">
+                <input type="number" class="group-offset-num" data-group="letter" data-axis="x" min="-200" max="200" value="0" step="1">
+              </div>
+              <div class="coord-axis-group">
+                <span>Y</span>
+                <input type="range" class="group-offset-range" data-group="letter" data-axis="y" min="-200" max="200" value="0" step="1">
+                <input type="number" class="group-offset-num" data-group="letter" data-axis="y" min="-200" max="200" value="0" step="1">
+              </div>
+            </div>
+
+            <!-- 符号组 -->
+            <div class="coord-group-label">符号组</div>
+            <div class="coord-grid">
+              <div class="coord-axis-group">
+                <span>X</span>
+                <input type="range" class="group-offset-range" data-group="symbol" data-axis="x" min="-200" max="200" value="0" step="1">
+                <input type="number" class="group-offset-num" data-group="symbol" data-axis="x" min="-200" max="200" value="0" step="1">
+              </div>
+              <div class="coord-axis-group">
+                <span>Y</span>
+                <input type="range" class="group-offset-range" data-group="symbol" data-axis="y" min="-200" max="200" value="0" step="1">
+                <input type="number" class="group-offset-num" data-group="symbol" data-axis="y" min="-200" max="200" value="0" step="1">
+              </div>
+            </div>
+
+            <!-- 功能组 -->
+            <div class="coord-group-label">功能组</div>
+            <div class="coord-grid">
+              <div class="coord-axis-group">
+                <span>X</span>
+                <input type="range" class="group-offset-range" data-group="action" data-axis="x" min="-200" max="200" value="0" step="1">
+                <input type="number" class="group-offset-num" data-group="action" data-axis="x" min="-200" max="200" value="0" step="1">
+              </div>
+              <div class="coord-axis-group">
+                <span>Y</span>
+                <input type="range" class="group-offset-range" data-group="action" data-axis="y" min="-200" max="200" value="0" step="1">
+                <input type="number" class="group-offset-num" data-group="action" data-axis="y" min="-200" max="200" value="0" step="1">
+              </div>
+            </div>
+
+            <button class="reset-btn" id="resetOffsetsBtn">↺ 恢复默认坐标</button>
           </div>
         </div>
-        <div class="control-group">
-          <div class="control-label">符号组</div>
-          <div class="control-inputs">
-            <input type="range" class="group-range" data-group="symbol" min="8" max="60" value="20">
-            <input type="number" class="group-num" data-group="symbol" min="8" max="100" value="20">
-          </div>
-        </div>
-        <div class="control-group">
-          <div class="control-label">功能组</div>
-          <div class="control-inputs">
-            <input type="range" class="group-range" data-group="action" min="8" max="60" value="26">
-            <input type="number" class="group-num" data-group="action" min="8" max="100" value="26">
-          </div>
-        </div>
+
       </div>
     </div>
+
   </div>
 </div>
 
@@ -301,6 +426,15 @@
           if (target === 'page1') window.dispatchEvent(new Event('resize'));
           else if (target === 'page2' && window.resizeCanvasToFit) window.resizeCanvasToFit();
         }, 50);
+      });
+    });
+
+    // =============================================
+    // 手风琴折叠逻辑
+    // =============================================
+    document.querySelectorAll('.accordion-header').forEach(header => {
+      header.addEventListener('click', () => {
+        header.parentElement.classList.toggle('open');
       });
     });
 
@@ -439,6 +573,14 @@
       let baseSizes = {}; 
       let defaultTexts = {};
 
+      // 分组偏移量
+      const groupOffsets = {
+        num: { x: 0, y: 0 },
+        letter: { x: 0, y: 0 },
+        symbol: { x: 0, y: 0 },
+        action: { x: 0, y: 0 }
+      };
+
       function initLayoutData() {
         defaultTexts = {};
         baseSizes = {};
@@ -455,7 +597,7 @@
         });
         
         if (current === keys9v2_custom || current === keys26v2_custom) {
-          document.getElementById('groupControlPanel').style.display = 'block';
+          document.getElementById('groupControlPanel').style.display = 'flex';
           document.querySelector('.group-range[data-group="num"]').value = 14;
           document.querySelector('.group-num[data-group="num"]').value = 14;
           document.querySelector('.group-range[data-group="letter"]').value = 28;
@@ -528,6 +670,49 @@
         });
       });
 
+      // ========== 坐标拉杆 + 数值 联动 ==========
+      const offsetRanges = document.querySelectorAll('.group-offset-range');
+      const offsetNums = document.querySelectorAll('.group-offset-num');
+
+      function applyOffset(group, axis, val) {
+        val = Math.max(-200, Math.min(200, val));
+        groupOffsets[group][axis] = val;
+        // 同步拉杆和数值
+        document.querySelectorAll(`.group-offset-range[data-group="${group}"][data-axis="${axis}"]`).forEach(el => el.value = val);
+        document.querySelectorAll(`.group-offset-num[data-group="${group}"][data-axis="${axis}"]`).forEach(el => el.value = val);
+        draw();
+      }
+
+      offsetRanges.forEach(range => {
+        range.addEventListener('input', (e) => {
+          const group = e.target.dataset.group;
+          const axis = e.target.dataset.axis;
+          applyOffset(group, axis, parseInt(e.target.value, 10));
+        });
+      });
+
+      offsetNums.forEach(num => {
+        num.addEventListener('input', (e) => {
+          const group = e.target.dataset.group;
+          const axis = e.target.dataset.axis;
+          let val = parseInt(e.target.value, 10);
+          if (isNaN(val)) return;
+          applyOffset(group, axis, val);
+        });
+      });
+
+      // 恢复默认坐标按钮
+      document.getElementById('resetOffsetsBtn').addEventListener('click', () => {
+        ['num', 'letter', 'symbol', 'action'].forEach(g => {
+          groupOffsets[g].x = 0;
+          groupOffsets[g].y = 0;
+        });
+        offsetRanges.forEach(el => el.value = 0);
+        offsetNums.forEach(el => el.value = 0);
+        draw();
+      });
+      // ======================================
+
       function drawChar(text, x, y, fontSize, weight, color) {
         ctx.save();
         ctx.textAlign = 'center';
@@ -575,7 +760,12 @@
           let baseSize = baseSizes[idx] || 50;
           let finalFontSize = baseSize * globalMultiplier;
           
-          drawChar(txt, k.x, k.y, finalFontSize, weight, color);
+          // 应用分组偏移
+          const offset = groupOffsets[k.group] || { x: 0, y: 0 };
+          const drawX = k.x + offset.x;
+          const drawY = k.y + offset.y;
+          
+          drawChar(txt, drawX, drawY, finalFontSize, weight, color);
         });
       }
 
@@ -634,7 +824,10 @@
         const { x, y } = getCanvasCoords(e);
         let found = null, minDistance = Infinity;
         current.forEach(k => {
-          const dist = Math.hypot(x - k.x, y - k.y);
+          const offset = groupOffsets[k.group] || { x: 0, y: 0 };
+          const drawX = k.x + offset.x;
+          const drawY = k.y + offset.y;
+          const dist = Math.hypot(x - drawX, y - drawY);
           if (dist < 50 && dist < minDistance) { found = k; minDistance = dist; }
         });
         return found;
